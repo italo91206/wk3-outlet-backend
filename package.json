@@ -1,0 +1,53 @@
+{
+  "name": "wk3-outlet-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -L src/server.js",
+    "migrate": "knex migrate:latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/italo91206/wk3-outlet-backend.git"
+  },
+  "author": "Italo Ferreira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/italo91206/wk3-outlet-backend/issues"
+  },
+  "homepage": "https://github.com/italo91206/wk3-outlet-backend#readme",
+  "dependencies": {
+    "@google-cloud/storage": "^5.8.5",
+    "@hapi/joi": "^17.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "consign": "^0.1.6",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "ioredis": "^4.16.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.24.0",
+    "multer": "^1.4.2",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.6.0",
+    "objection": "^2.1.13",
+    "pg": "^8.0.3",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^2.0.4",
+    "sucrase": "^3.13.0"
+  }
+}

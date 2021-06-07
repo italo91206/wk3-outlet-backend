@@ -1,0 +1,8 @@
+# Dependency directories
+node_modules
+
+# tmp uploads
+uploads/*
+!uploads/.gitkeep
+
+.idea/
