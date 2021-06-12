@@ -17,10 +17,10 @@ class AuthRoute {
   routes() {
     /** Realiza login */
     this.router.post('/login', async (req, res) => {
-      const { email, senha } = req.body;
+      const { email, password } = req.body;
       let user;
       try {
-        user = await auth.AuthenticateAndReturnToken(email, senha);
+        user = await auth.AuthenticateAndReturnToken(email, password);
         return res.status(200).json(user);
       } catch (err) {
         logger.error(`Erro api/routes/auth.js (Realiza login): ${err.message}`);

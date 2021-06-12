@@ -19,7 +19,7 @@ export default class Auth {
    */
   static async AuthenticateAndReturnToken(login, senha) {
     const userData = await modelLogin.retrieveUserData(login, senha);
-
+    
     if (!userData) {
       throw new AuthenticationFailedException();
     }
