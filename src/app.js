@@ -27,7 +27,7 @@ class App {
      * API
      */
     routes() {
-      this.app.use('/', api);
+      this.app.use('', api);
       this.app.use(httpHandlers);
     }
   }
