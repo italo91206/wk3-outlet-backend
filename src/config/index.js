@@ -14,7 +14,7 @@ export default {
   /**
    * Definindo a porta
    */
-  port: parseInt(process.env.DBPORT, 10),
+  port: parseInt(process.env.APP_PORT, 10),
 
   // frontend: {
   //   link: process.env.API_URL_FRONT,
