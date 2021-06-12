@@ -4,6 +4,7 @@ exports.up = function(knex){
         table.string('email', 45).notNullable();
         table.string('password', 45).notNullable();
         table.string('nome', 45).notNullable();
+        table.string('sobrenome', 45).notNullable();
         table.boolean('isAdmin').notNullable();
         table.integer('cpf');
         table.integer('rg');
