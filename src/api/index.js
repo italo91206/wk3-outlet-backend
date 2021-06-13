@@ -14,6 +14,7 @@ import authRouter from './routes/auth';
 // import patologiaRouter from './routes/patologia';
 import loginRouter from './routes/login'
 import modeloRouter from './routes/modelo'
+import marcaRouter from './routes/marcas'
 
 class RouteController {
   constructor() {
@@ -25,6 +26,7 @@ class RouteController {
     this.router.use('/login', loginRouter);
     this.router.use('/auth', authRouter);
     this.router.use('/modelo', modeloRouter);
+    this.router.use('/marca', marcaRouter);
     // this.router.use('/acessoLiberado', acessoLiberado);
     // this.router.use('/cadastro', ativaConta);
     // this.router.use('/usuario', usuarioRouter);
