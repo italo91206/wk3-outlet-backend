@@ -59,13 +59,13 @@ export default {
         const modelo = req.body;
 
         const [id] = await connection('modelos')
-            .returning('laudo_id')
+            .returning('id')
             .insert(modelo)
 
         return {
             success: true,
-            message: 'Laudo inserido com sucesso',
-            id
+            message: 'Modelo inserido com sucesso',
+            id: id
         }
     }
 }
