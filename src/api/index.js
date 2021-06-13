@@ -13,6 +13,7 @@ import authRouter from './routes/auth';
 // import ambienteRouter from './routes/ambiente';
 // import patologiaRouter from './routes/patologia';
 import loginRouter from './routes/login'
+import modeloRouter from './routes/modelo'
 
 class RouteController {
   constructor() {
@@ -23,6 +24,7 @@ class RouteController {
   routes() {
     this.router.use('/login', loginRouter);
     this.router.use('/auth', authRouter);
+    this.router.use('/modelo', modeloRouter);
     // this.router.use('/acessoLiberado', acessoLiberado);
     // this.router.use('/cadastro', ativaConta);
     // this.router.use('/usuario', usuarioRouter);
