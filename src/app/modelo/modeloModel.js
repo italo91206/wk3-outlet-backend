@@ -15,7 +15,7 @@ export default {
     },
 
     async deletarModelo(req){
-        const {id} = req.params;
+        const id = req.body.id;
         
 
         const modelo = await connection('modelos')
@@ -34,17 +34,19 @@ export default {
 
     async editarModelo(req){
         const body = req.body;
+        const id = req.body.id
+        let modelo;
 
-        console.log(body)
+        modelo = await connection('modelos')
+            .select('*')
+            .where('id', id)
+            .first();
 
-        // modelo = await connection('modelos')
-        //     .select('*')
-        //     .where('id', id)
-        //     .first();
+        console.log(modelo)
 
-        // if (!modelo) {
-        //     throw new DataNotFoundException('Nenhum dado encontrado');
-        // }
+        if (!modelo) {
+            throw new DataNotFoundException('Nenhum dado encontrado');
+        }
 
 
         await connection('modelos').update(body).where('id', body.id);
