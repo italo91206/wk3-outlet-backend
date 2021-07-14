@@ -22,8 +22,8 @@ class AuthRoute {
       try {
         user = await auth.AuthenticateAndReturnToken(email, password);
         return res.status(200).json(user);
-      } catch (err) {
-        logger.error(`Erro api/routes/auth.js (Realiza login): ${err.message}`);
+      }
+      catch (err) {
         return res.status(401).json({ success: false, error: err.message });
       }
     });

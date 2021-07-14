@@ -9,33 +9,15 @@ const bcrypt = require('bcryptjs');
 
 /** Verificar se o login é existente */
 async function loginExists(email, senha) {
-  // const user = await connection('usuario')
-  //   .innerJoin('pessoas', 'pessoas.pessoa_id', 'usuario.pessoa_id')
-  //   .where({ email: email })
-  //   .first();
-
-  //console.log({email, senha})
   const user = await connection('perfis')
     .select('*')
     .where('email', email)
     .where('password', senha)
     .first();
-  
-  //console.log({user})
 
-
-  // if (!user) throw new InvalidCredentialsException();
-
-  // const isMatch = bcrypt.compareSync(senha, user.senha);
-
-  // if (!isMatch) {
-  //   throw new InvalidCredentialsException();
-  // }
-
-  // if (user.ativo === false)
-  //   throw new AuthenticationFailedException(
-  //     'Conta inativa, verifique o e-mail de ativação'
-  //   );
+  if (!user) {
+    throw new InvalidCredentialsException();
+  }
 
   return user;
 }
@@ -49,9 +31,8 @@ export default {
     }
 
     return {
-      id: validateLogin.usuario_id,
-      nome: validateLogin.nome,
-      profissao: validateLogin.profissao,
+      id: validateLogin.id,
+      nome: validateLogin.nome
     };
   },
 

@@ -29,8 +29,8 @@ export default class Auth {
         login,
         user: userData.id,
         nome: userData.nome,
-        profissao: userData.profissao,
       },
+      
       config.token.SECRET_KEY,
       { expiresIn: config.token.expiration }
     );
