@@ -12,7 +12,7 @@ class CoresRouter {
             let dados;
             try{
                 dados = await service.handleVerCores();
-                res.status(200).json({ success: true, dados: dados});
+                res.status(200).json(dados);
             }
             catch(err){
                 res.status(400).json({ success: false, error: err.message })
