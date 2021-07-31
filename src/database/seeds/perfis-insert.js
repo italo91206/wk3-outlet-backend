@@ -5,6 +5,7 @@ exports.seed = function(knex){
             return knex('perfis').insert([
                 // default admin user
                 {
+                    id: 1, 
                     email: 'admin@wk3outlet.com.br',
                     password: 'teste@123#',
                     nome: 'Administrador',
@@ -13,6 +14,7 @@ exports.seed = function(knex){
                 },
                 // default user
                 {
+                    id: 2,
                     email: 'funcionario@wk3outlet.com.br',
                     password: 'teste@123#',
                     nome: 'Funcionario',

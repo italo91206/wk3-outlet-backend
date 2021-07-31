@@ -3,11 +3,11 @@ exports.seed = function(knex){
         .del()
         .then(function(){
             return knex('marcas').insert([
-                { marca: 'Hugo Boss' },
-                { marca: 'Lacoste' },
-                { marca: 'Armani Exchange' },
-                { marca: 'Polo Ralpho' },
-                { marca: 'Dudalina' }
+                { marca_id: 1, marca: 'Hugo Boss' },
+                { marca_id: 2, marca: 'Lacoste' },
+                { marca_id: 3, marca: 'Armani Exchange' },
+                { marca_id: 4, marca: 'Polo Ralpho' },
+                { marca_id: 5, marca: 'Dudalina' }
             ])
         })
 }

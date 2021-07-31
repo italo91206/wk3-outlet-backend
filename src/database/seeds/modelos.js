@@ -3,11 +3,11 @@ exports.seed = function(knex){
         .del()
         .then(function(){
             return knex('modelos').insert([
-                { modelo: 'T-Shirt' },
-                { modelo: 'Camiseta' },
-                { modelo: 'Polo' },
-                { modelo: 'Regata' },
-                { modelo: 'Social' }
+                { modelo_id: 1, modelo: 'T-Shirt' },
+                { modelo_id: 2, modelo: 'Camiseta' },
+                { modelo_id: 3, modelo: 'Polo' },
+                { modelo_id: 4, modelo: 'Regata' },
+                { modelo_id: 5, modelo: 'Social' }
             ])
         })
 }
