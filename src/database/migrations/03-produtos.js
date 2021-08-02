@@ -1,13 +1,13 @@
-exports.up = function(knex){
+exports.up = function(knex) {
     return knex.schema.createTable('produtos', function(table){
         table.increments('produto_id').primary();
         table.string('nome', 45).notNullable();
-        table.integer('preco').notNullable();
+        table.float('preco').notNullable();
         table.integer('estoque').notNullable();
-        table.integer('peso').notNullable();
+        table.float('peso').notNullable();
         table.string('url', 45);
-        table.integer('custo').notNullable();
-        table.integer('lucro');
+        table.float('custo').notNullable();
+        table.float('lucro');
 
         table
             .integer('modelo_id')
@@ -21,6 +21,6 @@ exports.up = function(knex){
     });
 };
 
-exports.down = function(knex){
-    return knex.schema.dropTable('produtos');
+exports.down = (knex) => {
+    knex.schema.dropTable('produtos');
 }
