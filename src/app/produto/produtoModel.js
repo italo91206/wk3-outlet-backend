@@ -10,5 +10,11 @@ export default {
             throw new DataNotFoundException('Nenhum dado encontrado');
         
         return produtos;
+    },
+
+    async getProduto(req){
+        const { url } = req.query;
+        const produto = await connection('produtos').select('*').where('url', url).first();
+        return produto;
     }
 }
