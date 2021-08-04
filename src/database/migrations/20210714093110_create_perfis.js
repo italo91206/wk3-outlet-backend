@@ -6,6 +6,8 @@ exports.up = function(knex){
         table.string('nome', 45).notNullable();
         table.string('sobrenome', 45).notNullable();
         table.boolean('isAdmin').notNullable();
+        table.boolean('isEmployee');
+        table.boolean('isCompany');
         table.integer('cpf');
         table.integer('rg');
         table.integer('cnpj');

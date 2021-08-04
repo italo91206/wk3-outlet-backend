@@ -2,7 +2,7 @@ import express from 'express';
 
 import authRouter from './routes/auth';
 // import acessoLiberado from './routes/acessoLiberado';
-// import usuarioRouter from './routes/usuario';
+import usuarioRouter from './routes/usuario';
 // import pessoaRouter from './routes/pessoa';
 // import empresaRouter from './routes/empresa';
 // import peritoRouter from './routes/perito';
@@ -33,7 +33,7 @@ class RouteController {
     this.router.use('/cor', coresRouter);
     // this.router.use('/acessoLiberado', acessoLiberado);
     // this.router.use('/cadastro', ativaConta);
-    // this.router.use('/usuario', usuarioRouter);
+    this.router.use('/usuario', usuarioRouter);
     // this.router.use('/pessoa', pessoaRouter);
     // this.router.use('/empresa', empresaRouter);
     // this.router.use('/perito', peritoRouter);

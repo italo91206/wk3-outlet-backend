@@ -10,7 +10,9 @@ exports.seed = function(knex){
                     password: 'teste@123#',
                     nome: 'Administrador',
                     sobrenome: '- WK3 Outlet',
-                    isAdmin: true
+                    isAdmin: true,
+                    isEmployee: false,
+                    isCompany: false
                 },
                 // default user
                 {
@@ -19,7 +21,9 @@ exports.seed = function(knex){
                     password: 'teste@123#',
                     nome: 'Funcionario',
                     sobrenome: '- WK3 Outlet',
-                    isAdmin: false
+                    isAdmin: false,
+                    isEmployee: true,
+                    isCompany: false
                 }
             ])
         })
