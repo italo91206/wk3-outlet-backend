@@ -8,6 +8,7 @@ exports.up = function(knex) {
         table.string('url', 45);
         table.float('custo').notNullable();
         table.float('lucro');
+        table.string('descricao', 256);
 
         table
             .integer('modelo_id')

@@ -28,6 +28,40 @@ class ProdutoRouter{
             catch(err){
                 res.status(400).json({ success: false, error: err.message });
             }
+        });
+
+        this.router.post('/novo', async (req, res) => {
+            let dados;
+            try {
+                dados = await service.handleNovoProduto(req);
+                res.status(200).json({ dados: dados });
+            }
+            catch(err){
+                res.status(400).json({ success: false, error: err.message });
+            }
+
+        });
+
+        this.router.post('/deletar', async (req, res) => {
+            let dados;
+            try {
+                dados = await service.handleDeletarProduto(req);
+                res.status(200).json({ dados: dados });
+            }
+            catch(err){
+                res.status(400).json({ success: false, message: err.message });
+            }
+        });
+
+        this.router.put('/atualizar', async (req, res) => {
+            let dados;
+            try {
+                dados = await service.atualizarProduto(req);
+                res.status(200).json({ dados: dados })
+            }
+            catch(err){
+                res.status(400).json({ success: false, message: err.message });
+            }
         })
     }
 }
