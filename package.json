@@ -39,6 +39,7 @@
     "nodemailer": "^6.6.0",
     "objection": "^2.1.13",
     "pg": "^8.0.3",
+    "slugify": "^1.6.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {

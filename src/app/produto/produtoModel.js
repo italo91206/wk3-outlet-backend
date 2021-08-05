@@ -1,4 +1,5 @@
 import {DataNotFoundException} from '../../utils/exceptions';
+import slugify from 'slugify';
 
 const connection = require('../../database/connection');
 
@@ -24,10 +25,9 @@ export default {
         produto.peso = parseFloat(produto.peso);
         produto.preco = parseFloat(produto.preco);
         produto.estoque = parseInt(produto.estoque, 10);
+        produto.url = slugify(produto.nome, {remove: /[*+~.()'"!:@]/g, lower: true});
 
         const novo = await connection('produtos').insert(produto, 'produto_id');
-        console.log( produto );
-
         return novo;
     },
 
