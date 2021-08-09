@@ -17,6 +17,7 @@ import modeloRouter from './routes/modelo'
 import marcaRouter from './routes/marcas'
 import produtoRouter from './routes/produto'
 import coresRouter from './routes/cores'
+import motivosRouter from './routes/motivos'
 
 class RouteController {
   constructor() {
@@ -34,6 +35,7 @@ class RouteController {
     // this.router.use('/acessoLiberado', acessoLiberado);
     // this.router.use('/cadastro', ativaConta);
     this.router.use('/usuario', usuarioRouter);
+    this.router.use('/motivo', motivosRouter);
     // this.router.use('/pessoa', pessoaRouter);
     // this.router.use('/empresa', empresaRouter);
     // this.router.use('/perito', peritoRouter);
