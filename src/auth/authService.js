@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import modelLogin from '../app/login/loginModel';
 import config from '../config';
 import { AuthenticationFailedException } from '../utils/exceptions';
-import enviaEmail from '../utils/sendingEmails/sendingEmail';
+// import enviaEmail from '../utils/sendingEmails/sendingEmail';
 
 /**
  * @class Authentication - Autentica as credenciais e cria o token
@@ -37,39 +37,39 @@ export default class Auth {
     return { auth: true, token };
   }
 
-  static async RecuperaSenhaReturnToken(login) {
-    // Verifica se o e-mail existe, se não existir já retorna uma mensagem
-    const userData = await modelLogin.checkUserEmail(login);
+  // static async RecuperaSenhaReturnToken(login) {
+  //   // Verifica se o e-mail existe, se não existir já retorna uma mensagem
+  //   const userData = await modelLogin.checkUserEmail(login);
 
-    const token = jwt.sign(
-      {
-        user: userData.id,
-      },
-      config.tokenRecuperaSenha.SECRET_KEY,
-      { expiresIn: config.tokenRecuperaSenha.expiration }
-    );
-    // grava os dados na tabela de recupera_senha
-    const userPerson = await modelLogin.retrieveUserEmail(login, token);
+  //   const token = jwt.sign(
+  //     {
+  //       user: userData.id,
+  //     },
+  //     config.tokenRecuperaSenha.SECRET_KEY,
+  //     { expiresIn: config.tokenRecuperaSenha.expiration }
+  //   );
+  //   // grava os dados na tabela de recupera_senha
+  //   const userPerson = await modelLogin.retrieveUserEmail(login, token);
 
-    enviaEmail.esqueceuSenha(login, token, userPerson.nome);
+  //   enviaEmail.esqueceuSenha(login, token, userPerson.nome);
 
-    return {
-      auth: true,
-      token,
-      message: 'Verifique no e-mail o link de recuperação de senha',
-    };
-  }
+  //   return {
+  //     auth: true,
+  //     token,
+  //     message: 'Verifique no e-mail o link de recuperação de senha',
+  //   };
+  // }
 
-  static async ativaCadastro(id) {
-    const token = jwt.sign(
-      {
-        id,
-      },
-      config.tokenAtivaConta.SECRET_KEY
-    );
-    return {
-      auth: true,
-      token,
-    };
-  }
+  // static async ativaCadastro(id) {
+  //   const token = jwt.sign(
+  //     {
+  //       id,
+  //     },
+  //     config.tokenAtivaConta.SECRET_KEY
+  //   );
+  //   return {
+  //     auth: true,
+  //     token,
+  //   };
+  // }
 }
