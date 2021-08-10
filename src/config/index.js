@@ -44,24 +44,4 @@ export default {
     defaultDatabase: process.env.PGDATABASE,
     connectString: process.env.PGHOST,
   },
-  /**
-   * Dados do e-mail de envio
-   */
-  emailEnvio: {
-    usuario: process.env.ENVEMAIL,
-    senha: process.env.ENVSENHA,
-  },
-  /**
-   * REDIS
-   */
-  redisConfig: {
-    host: process.env.REDIS_HOST,
-    port: parseInt(process.env.REDIS_PORT, 10),
-  },
-  /**
-   * Google cloud storage ID
-   */
-  googleStorage: {
-    GCLOUD_STORAGE_BUCKET: process.env.GCLOUD_STORAGE_BUCKET,
-  },
 };
