@@ -1,19 +1,10 @@
-import express from 'express';
+import { Router } from 'express';
 import service from '../../app/login/loginService'
-import { middlewares } from '../middlewares';
 
 class LoginRouter {
-    /**
-     * @constructor
-     */
     constructor() {
-      this.router = express.Router();
-      this.middlewares();
+      this.router = Router();
       this.routes();
-    }
-    
-    middlewares(){
-      this.router.use(middlewares);
     }
   
     routes() {

@@ -19,7 +19,7 @@ class ModeloRouter {
             }
         });
 
-        this.router.delete('/deleteModelo/:id', async(req, res) => {
+        this.router.delete('/deleteModelo', async(req, res) => {
             let dados;
             try {
                 dados = await service.handleDeleteModelo(req);
@@ -30,7 +30,7 @@ class ModeloRouter {
             }
         });
 
-        this.router.put('/editarModelo/:id', async(req, res) => {
+        this.router.put('/editarModelo', async(req, res) => {
             let dados;
             try{
                 dados = await service.handleEditarModelo(req);
