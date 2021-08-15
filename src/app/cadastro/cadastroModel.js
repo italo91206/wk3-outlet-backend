@@ -5,7 +5,7 @@ import {
   PasswordPrevious,
 } from '../../utils/exceptions';
 import geraToken from '../../auth/authService';
-import enviaEmail from '../../utils/sendingEmails/sendingEmail';
+// import enviaEmail from '../../utils/sendingEmails/sendingEmail';
 import bcrypt from 'bcryptjs';
 
 const connection = require('../../database/connection');
@@ -100,7 +100,7 @@ export default {
       usuId = usuarioId;
       nomePessoa = pessoa.nome;
 
-      enviaEmail.ativaCadastro(login.email, nomePessoa, ativaConta.token);
+      // enviaEmail.ativaCadastro(login.email, nomePessoa, ativaConta.token);
     });
     return {
       success: true,

@@ -3,7 +3,7 @@ import express from 'express';
 import auth from '../../auth/authService';
 import { middlewares } from '../middlewares';
 import { middlewaresRecupera } from '../middlewares';
-import serviceRecupera from '../../app/cadastro/cadastroService';
+// import serviceRecupera from '../../app/cadastro/cadastroService';
 import logger from '../../utils/logger';
 class AuthRoute {
   /**
@@ -39,23 +39,23 @@ class AuthRoute {
       }
     });
     /** Cadastra a senha nova */
-    this.router.put('/recuperaSenha', middlewaresRecupera, async (req, res) => {
-      let dados;
-      try {
-        dados = await serviceRecupera.handleRecuperaSenhaRequest(req);
-        res.status(200).json(dados);
-      } catch (err) {
-        res.status(400).json({ success: false, error: err.message });
-      }
-    });
+    // this.router.put('/recuperaSenha', middlewaresRecupera, async (req, res) => {
+    //   let dados;
+    //   try {
+    //     dados = await serviceRecupera.handleRecuperaSenhaRequest(req);
+    //     res.status(200).json(dados);
+    //   } catch (err) {
+    //     res.status(400).json({ success: false, error: err.message });
+    //   }
+    // });
     /** Teste de rota autenticada */
-    this.router.get('/protegida', ...middlewares, async (req, res) => {
-      try {
-        res.status(200).json('Conseguiu');
-      } catch (err) {
-        res.status(401).json('Nada feito');
-      }
-    });
+    // this.router.get('/protegida', ...middlewares, async (req, res) => {
+    //   try {
+    //     res.status(200).json('Conseguiu');
+    //   } catch (err) {
+    //     res.status(401).json('Nada feito');
+    //   }
+    // });
   }
 }
 

@@ -1,8 +1,8 @@
 import config from '../../config';
 import nodemailer from 'nodemailer';
 
-var $usuario = config.emailEnvio.usuario;
-var $senha = config.emailEnvio.senha;
+var usuario = config.emailEnvio.usuario;
+var senha = config.emailEnvio.senha;
 
 function connectEmail() {
   var transporter = nodemailer.createTransport({
@@ -17,13 +17,13 @@ function connectEmail() {
 
 export default {
   async ativaCadastro(emailDest, nome, token) {
-    var $destinatario = emailDest;
+    var destinatario = emailDest;
     if (emailDest !== null) {
       const transporter = connectEmail();
 
       var mailOptions = {
-        from: $usuario,
-        to: $destinatario,
+        from: usuario,
+        to: destinatario,
         subject: 'Confirme sua inscrição',
         //text: 'Muito fácil enviar um email pelo node, tente você também!',
         html: `

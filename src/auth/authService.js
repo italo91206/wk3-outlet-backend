@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import modelLogin from '../app/login/loginModel';
 import config from '../config';
 import { AuthenticationFailedException } from '../utils/exceptions';
-import enviaEmail from '../utils/sendingEmails/sendingEmail';
+// import enviaEmail from '../utils/sendingEmails/sendingEmail';
 
 /**
  * @class Authentication - Autentica as credenciais e cria o token
@@ -51,7 +51,7 @@ export default class Auth {
     // grava os dados na tabela de recupera_senha
     const userPerson = await modelLogin.retrieveUserEmail(login, token);
 
-    enviaEmail.esqueceuSenha(login, token, userPerson.nome);
+    // enviaEmail.esqueceuSenha(login, token, userPerson.nome);
 
     return {
       auth: true,
