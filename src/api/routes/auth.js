@@ -24,7 +24,7 @@ class AuthRoute {
         return res.status(200).json(user);
       }
       catch (err) {
-        return res.status(401).json({ success: false, error: err.message });
+        return res.status(200).json({ success: false, error: err.message });
       }
     });
     /** Recupera senha - Envia um e-mail com o token para realizar a troca de senha */

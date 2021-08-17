@@ -4,6 +4,8 @@ import {
   InvalidEmailException,
 } from '../../utils/exceptions';
 
+var jwt = require("jsonwebtoken");
+
 const connection = require('../../database/connection');
 const bcrypt = require('bcryptjs');
 
@@ -23,17 +25,20 @@ async function loginExists(email, senha) {
 }
 
 export default {
-  async retrieveUserData(email, senha) {
-    const validateLogin = await loginExists(email, senha);
+  async retrieveUserData(req) {
+    const { email, password } = req.body;
+
+    const validateLogin = await loginExists(email, password);
 
     if (!validateLogin) {
       throw new InvalidCredentialsException('Senha incorreta');
     }
+    
+    var token = jwt.sign( { usuario: validateLogin} , process.env.SECRET_KEY, 
+      {expiresIn: 86400}
+    );
 
-    return {
-      id: validateLogin.id,
-      nome: validateLogin.nome
-    };
+    return { token, usuario: validateLogin };
   },
 
   async checkUserEmail(email) {
