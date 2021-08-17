@@ -1,9 +1,12 @@
 import {DataNotFoundException} from '../../utils/exceptions';
 import { isFunctionScopedDeclaration } from 'sucrase/dist/parser/tokenizer';
 
+var jwt = require("jsonwebtoken");
+
 const connection = require('../../database/connection');
 
 export default {
+<<<<<<< HEAD
   async selectPerfil(req){
     const email = req.body.email;
     const password = req.body.password;
@@ -11,6 +14,27 @@ export default {
     const perfil = await connection('perfis')
       .select('*')
       .where('email', email)
+=======
+  async retrieveUserData(req) {
+    const { email, password } = req.body;
+
+    const validateLogin = await loginExists(email, password);
+
+    if (!validateLogin) {
+      throw new InvalidCredentialsException('Senha incorreta');
+    }
+    
+    var token = jwt.sign( { usuario: validateLogin} , process.env.SECRET_KEY, 
+      {expiresIn: 86400}
+    );
+
+    return { token, usuario: validateLogin };
+  },
+
+  async checkUserEmail(email) {
+    const usuarioFromDB = await connection('usuario') // acessa a tabela
+      .where({ email: email })
+>>>>>>> development
       .first();
 
     if(!perfil){

@@ -17,6 +17,14 @@ export default {
   },
   async atualizarTamanho(req) {
     const  { tamanho } = req.body;
+
+    const repetido = await connection('tamanhos')
+      .where('tamanho', tamanho.tamanho)
+      .first();
+
+    if(repetido.tamanho_id != tamanho.tamanho_id && repetido.tamanho == tamanho.tamanho)
+      throw { message: "Já existe esse tamanho!" };
+
     const atualizar = await connection('tamanhos')
       .where('tamanho_id', tamanho.tamanho_id)
       .update(tamanho, 'tamanho_id');

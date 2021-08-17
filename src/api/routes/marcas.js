@@ -1,57 +1,74 @@
 import { Router } from 'express';
+import { middlewares } from '../middlewares';
 import service from '../../app/marca/marcaService';
 
-class MarcaRouter{
-    constructor(){
-        this.router = Router();
-        this.routes();
-    }
+class MarcaRouter {
+  constructor() {
+    this.router = Router();
+    this.middlewares();
+    this.routes();
+  }
 
-    routes(){
-        this.router.get('/marcas', async(req, res) => {
-            let dados;
-            try {
-                dados = await service.handleVerMarcas();
-                res.status(200).json(dados);
-            }
-            catch (err) {
-                res.status(400).json({ success: false, error: err.message })
-            }
-        });
+  middlewares() {
+    this.router.use(middlewares);
+  }
 
-        this.router.delete('/deleteMarca', async(req, res) => {
-            let dados;
-            try {
-                dados = await service.handleDeleteMarca(req);
-                res.status(200).json(dados);
-            }
-            catch(err){
-                res.status(400).json({ success: false, error: err.message });
-            }
-        });
+  routes() {
+    this.router.get('/marcas', async (req, res) => {
+      let dados;
+      try {
+        dados = await service.handleVerMarcas();
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch (err) {
+        res.status(200).json({ success: false, message: err.message })
+      }
+    });
 
-        this.router.put('/editarMarca', async(req, res)=>{
-            let dados;
-            try{
-                dados = await service.handleEditarMarca(req);
-                res.status(200).json(dados);
-            }
-            catch(err){
-                res.status(400).json({ success: false, error: err.message });
-            }
-        });
+    this.router.get('/marca', async(req, res) => {
+      let dados;
+      try{
+        dados = await service.handleVerMarca(req);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch(err){
+        res.status(200).json({ success: false, message: err.message });
+      }
+    })
 
-        this.router.post('/novaMarca', async(req, res) =>{
-            let dados;
-            try{
-                dados = await service.handleInsert(req);
-                res.status(200).json(dados);
-            }
-            catch(err){
-                res.status(400).json({ success: false, error: err.message });
-            }
-        })
-    }
+    this.router.delete('/deletar', async (req, res) => {
+      let dados;
+      try {
+        dados = await service.handleDeleteMarca(req);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch (err) {
+        res.status(200).json({ success: false, message: err.message });
+      }
+    });
+
+    this.router.put('/atualizar', async (req, res) => {
+      let dados;
+      try {
+        dados = await service.handleEditarMarca(req);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch (err) {
+        res.status(200).json({ success: false, message: err.message });
+      }
+    });
+
+    this.router.post('/novo', async (req, res) => {
+      let dados;
+      try {
+        dados = await service.handleInsert(req);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch (err) {
+        res.status(200).json({ success: false, error: err.message });
+      }
+    })
+  }
 }
 
 export default new MarcaRouter().router;

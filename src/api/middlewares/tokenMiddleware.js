@@ -18,6 +18,7 @@ async function jwtMiddleware(req, res, next) {
     return res.status(403).json({ auth: false, msg: 'Token não informado' });
   }
   try {
+    // console.log(config.token.SECRET_KEY);
     jwt.verify(token, config.token.SECRET_KEY, async (err, decoded) => {
       if (err) {
         return res.status(401).json({

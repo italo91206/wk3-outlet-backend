@@ -27,12 +27,28 @@ export default {
 
     async novaCor(req){
         const { cor } = req.body;
+        
+        const repetido = await connection('cores')
+            .where('cor', cor.cor)
+            .first();
+
+        if(repetido)
+            throw { message: "Já existe uma cor com esse nome!" };
+
         const novo = await connection('cores').insert(cor, 'cor_id');
         return novo;
     },
 
     async atualizarCor(req){
         const { cor } = req.body;
+
+        const repetido = await connection('cores')
+            .where('cor', cor.cor)
+            .first();
+
+        if(repetido.cor_id != cor.cor_id && repetido.cor == cor.cor)
+            throw { message: "Já existe uma cor com esse nome!" };
+
         const atualizar = await connection('cores').where('cor_id', cor.cor_id).update(cor, 'cor_id');
         return atualizar;
     }

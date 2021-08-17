@@ -24,6 +24,16 @@ exports.seed = function(knex){
                     isAdmin: false,
                     isEmployee: true,
                     isCompany: false
+                },
+                {
+                    id: 3,
+                    email: 'cliente@wk3outlet.com.br',
+                    password: 'teste@123#',
+                    nome: 'Cliente',
+                    sobrenome: '- WK3 Outlet',
+                    isAdmin: false,
+                    isEmployee: false,
+                    isCompany: false
                 }
             ])
         })
