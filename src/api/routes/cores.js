@@ -34,10 +34,10 @@ class CoresRouter {
             let dados;
             try{
                 dados = await service.handleDeletarCor(req);
-                res.status(200).json(dados);
+                res.status(200).json({ success: true, data: dados });
             }
             catch(err){
-                res.status(400).json({ success: false, error: err.message });
+                res.status(200).json({ success: false, message: err.message });
             }
         });
 
@@ -45,10 +45,10 @@ class CoresRouter {
             let dados;
             try{
                 dados = await service.handleNovaCor(req);
-                res.status(200).json(dados);
+                res.status(200).json({success: true, data: dados});
             }
             catch(err){
-                res.status(400).json({ success: false, error: err.message });
+                res.status(200).json({ success: false, message: err.message });
             }
         });
 
@@ -56,10 +56,10 @@ class CoresRouter {
             let dados;
             try{
                 dados = await service.handleAtualizarCor(req);
-                res.status(200).json(dados);
+                res.status(200).json({ success: true, data: dados });
             }
             catch(err){
-                res.status(400).json({ success: false, message: err.message });
+                res.status(200).json({ success: false, message: err.message });
             }
         })
     }

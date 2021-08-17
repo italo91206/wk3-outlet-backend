@@ -32,8 +32,8 @@ class RouteController {
   routes() {
     this.router.use('/login', loginRouter);
     this.router.use('/auth', authRouter);
-    this.router.use('/modelo', modeloRouter);
-    this.router.use('/marca', marcaRouter);
+    this.router.use('/modelos', modeloRouter);
+    this.router.use('/marcas', marcaRouter);
     this.router.use('/produto', produtoRouter);
     this.router.use('/cor', coresRouter);
     // this.router.use('/acessoLiberado', acessoLiberado);

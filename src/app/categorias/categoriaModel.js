@@ -8,5 +8,13 @@ export default {
   async verCategoria(req){ return 'foo'},
   async novaCategoria(req){ return 'foo'},
   async deletarCategoria(req){ return 'foo'},
-  async atualizarCategoria(req){ return 'foo'},
+  
+  async atualizarCategoria(req){
+    const { categoria } = req.body;
+    const atualizar = await connection('categorias')
+      .where('categoria_id', categoria.categoria_id)
+      .update(categoria, 'categoria_id');
+    
+    return atualizar;
+  },
 }

@@ -10,7 +10,7 @@ class CategoriasRouter {
   }
 
   middlewares(){
-    this.router.use(this.middlewares);
+    this.router.use(middlewares);
   }
 
   routes(){

@@ -12,52 +12,69 @@ export default {
     return marcas;
   },
 
-  async deletarMarca(req) {
-    const { id } = req.body;
+  async listarMarca(req){
+    const { id } = req.query;
 
     const marca = await connection('marcas')
+      .where('marca_id', id)
       .select('*')
-      .where('id', id)
       .first();
-
-    if (!marca) {
-      throw new DataNotFoundException('Nenhum dado encontrado');
-    }
-
-    await connection('marcas').where('id', id).del();
 
     return marca;
   },
 
-  async editarMarca(req) {
-    const body = req.body;
-    let marca;
+  async deletarMarca(req) {
+    const { id } = req.query;
 
-    marca = await connection('marcas')
-      .select('*')
-      .where('id', body.id)
-      .first();
+    const em_uso = await connection('produtos')
+      .where('marca_id', id)
+      .select('*');
 
-    if (!marca) {
-      throw new DataNotFoundException('Nenhum dado encontrado');
+    if(em_uso.length)
+      throw { message: "Há produtos que utilizam desta marca. Impossível remover "};
+    else{
+      const marca = await connection('marcas')
+      .where('marca_id', id)
+      .del();
+
+      return marca;
     }
+  },
 
-    await connection('marcas')
-      .update(body)
-      .where('id', body.id)
+  async editarMarca(req) {
+    const { marca } = req.body;
+    
+    const repetido = await connection('marcas')
+      .where('marca', marca.marca)
+      .select('*')
+      .first();
+    
+    if(repetido){
+      if(repetido.marca_id != marca.marca_id && marca.marca == marca.marca)
+        throw { message: "Já existe uma marca com esse nome!" };
+    }
+    else{
+      const atualizar = await connection('marcas')
+      .where('marca_id', marca.marca_id)
+      .update(marca, 'marca_id');
+
+      return atualizar;
+    }
   },
 
   async criarMarca(req) {
-    const marca = req.body;
+    const {marca} = req.body;
+    const repetido = await connection('marcas')
+      .where('marca', marca.marca)
+      .first();
 
-    const [id] = await connection('marcas')
-      .returning('id')
-      .insert(marca)
+    if(repetido)
+      throw { message: "Já existe uma marca com esse nome!" };
+    else{
+      const novo = await connection('marcas')
+      .insert(marca, 'marca_id')
 
-    return {
-      success: true,
-      message: 'Marca inserido com sucesso',
-      id: id
+      return novo;
     }
   }
 }
