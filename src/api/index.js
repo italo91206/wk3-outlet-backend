@@ -21,6 +21,7 @@ import motivosRouter from './routes/motivos'
 import tamanhoRouter from './routes/tamanhos'
 import cupomRouter from './routes/cupons'
 import acertoEstoqueRouter from './routes/acerto-estoque'
+import categoriasRouter from './routes/categorias'
 
 class RouteController {
   constructor() {
@@ -42,6 +43,7 @@ class RouteController {
     this.router.use('/tamanho', tamanhoRouter);
     this.router.use('/cupom', cupomRouter);
     this.router.use('/acerto-de-estoque', acertoEstoqueRouter);
+    this.router.use('/categorias', categoriasRouter);
     // this.router.use('/pessoa', pessoaRouter);
     // this.router.use('/empresa', empresaRouter);
     // this.router.use('/perito', peritoRouter);
