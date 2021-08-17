@@ -51,11 +51,7 @@ export default class Auth {
   //   // grava os dados na tabela de recupera_senha
   //   const userPerson = await modelLogin.retrieveUserEmail(login, token);
 
-<<<<<<< HEAD
-  //   enviaEmail.esqueceuSenha(login, token, userPerson.nome);
-=======
     // enviaEmail.esqueceuSenha(login, token, userPerson.nome);
->>>>>>> development
 
   //   return {
   //     auth: true,
