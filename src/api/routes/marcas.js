@@ -1,10 +1,16 @@
 import { Router } from 'express';
+import { middlewares } from '../middlewares';
 import service from '../../app/marca/marcaService';
 
 class MarcaRouter{
     constructor(){
         this.router = Router();
+        this.middlewares();
         this.routes();
+    }
+
+    middlewares() {
+        this.router.use(middlewares);
     }
 
     routes(){
