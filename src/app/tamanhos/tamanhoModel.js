@@ -20,9 +20,10 @@ export default {
 
     const repetido = await connection('tamanhos')
       .where('tamanho', tamanho.tamanho)
+      .select('*')
       .first();
-
-    if(repetido.tamanho_id != tamanho.tamanho_id && repetido.tamanho == tamanho.tamanho)
+    
+    if(repetido && repetido.tamanho_id != tamanho.tamanho_id && repetido.tamanho == tamanho.tamanho)
       throw { message: "Já existe esse tamanho!" };
 
     const atualizar = await connection('tamanhos')

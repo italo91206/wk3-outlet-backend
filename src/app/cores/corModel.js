@@ -46,7 +46,7 @@ export default {
             .where('cor', cor.cor)
             .first();
 
-        if(repetido.cor_id != cor.cor_id && repetido.cor == cor.cor)
+        if(repetido && repetido.cor_id != cor.cor_id && repetido.cor == cor.cor)
             throw { message: "Já existe uma cor com esse nome!" };
 
         const atualizar = await connection('cores').where('cor_id', cor.cor_id).update(cor, 'cor_id');
