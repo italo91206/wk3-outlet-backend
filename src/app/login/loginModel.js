@@ -6,15 +6,6 @@ var jwt = require("jsonwebtoken");
 const connection = require('../../database/connection');
 
 export default {
-<<<<<<< HEAD
-  async selectPerfil(req){
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const perfil = await connection('perfis')
-      .select('*')
-      .where('email', email)
-=======
   async retrieveUserData(req) {
     const { email, password } = req.body;
 
@@ -34,7 +25,6 @@ export default {
   async checkUserEmail(email) {
     const usuarioFromDB = await connection('usuario') // acessa a tabela
       .where({ email: email })
->>>>>>> development
       .first();
 
     if(!perfil){
