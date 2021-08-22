@@ -1,15 +1,5 @@
 import { Router } from 'express';
 import service from '../../app/login/loginService'
-<<<<<<< HEAD
-
-class LoginRouter {
-    constructor() {
-      this.router = Router();
-      this.routes();
-    }
-  
-    routes() {
-=======
 // import { middlewares } from '../middlewares';
 
 class LoginRouter {
@@ -18,7 +8,7 @@ class LoginRouter {
    */
   constructor() {
     this.router = express.Router();
-    // this.middlewares();
+    this.middlewares();
     this.routes();
   }
 
@@ -27,7 +17,6 @@ class LoginRouter {
   }
 
   routes() {
->>>>>>> development
     //   para fazer o login
     this.router.post('/login', async (req, res) => {
       let dados;
