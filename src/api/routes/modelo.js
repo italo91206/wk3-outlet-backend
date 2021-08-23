@@ -19,29 +19,6 @@ class ModeloRouter {
       }
     });
 
-<<<<<<< HEAD
-        this.router.delete('/deleteModelo', async(req, res) => {
-            let dados;
-            try {
-                dados = await service.handleDeleteModelo(req);
-                res.status(200).json(dados);
-            }
-            catch(err){
-                res.status(400).json({ success: false, error: err.message });
-            }
-        });
-
-        this.router.put('/editarModelo', async(req, res) => {
-            let dados;
-            try{
-                dados = await service.handleEditarModelo(req);
-                res.status(200).json(dados);
-            }
-            catch(err){
-                res.status(400).json({ success: false, error: err.message });
-            }
-        });
-=======
     this.router.get('/modelo', async(req, res) => {
       let dados;
       try{
@@ -63,7 +40,6 @@ class ModeloRouter {
         res.status(200).json({ success: false, message: err.message });
       }
     });
->>>>>>> development
 
     this.router.put('/atualizar', async (req, res) => {
       let dados;

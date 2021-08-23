@@ -7,14 +7,14 @@ class LoginRouter {
    * @constructor
    */
   constructor() {
-    this.router = express.Router();
-    this.middlewares();
+    this.router = Router();
+    // this.middlewares();
     this.routes();
   }
 
-  middlewares() {
-    this.router.use(middlewares);
-  }
+  // middlewares() {
+  //   this.router.use(middlewares);
+  // }
 
   routes() {
     //   para fazer o login

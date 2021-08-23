@@ -6,10 +6,20 @@ var jwt = require("jsonwebtoken");
 const connection = require('../../database/connection');
 
 export default {
+  async loginExists(email, password){
+    const existe = await connection('perfis')
+      .where('email', email)
+      .where('password', password)
+      .select('*')
+      .first();
+    
+    return existe;
+  },
+
   async retrieveUserData(req) {
     const { email, password } = req.body;
 
-    const validateLogin = await loginExists(email, password);
+    const validateLogin = await this.loginExists(email, password);
 
     if (!validateLogin) {
       throw new InvalidCredentialsException('Senha incorreta');
