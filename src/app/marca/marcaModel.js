@@ -4,7 +4,9 @@ const connection = require('../../database/connection');
 
 export default {
   async listarMarcas() {
-    const marcas = await connection('marcas').select('*')
+    const marcas = await connection('marcas')
+      .where('is_enabled', true)
+      .select('*')
 
     if (!marcas.length) {
       throw new DataNotFoundException('Nenhum dado encontrado');
@@ -30,8 +32,13 @@ export default {
       .where('marca_id', id)
       .select('*');
 
-    if(em_uso.length)
-      throw { message: "Há produtos que utilizam desta marca. Impossível remover "};
+    if(em_uso.length){
+      const atualizar = await connection('marcas')
+        .where('marca_id', id)
+        .update({ is_enabled: false });
+
+      return atualizar;
+    }
     else{
       const marca = await connection('marcas')
       .where('marca_id', id)
