@@ -1,47 +1,60 @@
-import {DataNotFoundException} from '../../utils/exceptions';
+import { DataNotFoundException } from '../../utils/exceptions';
 import slugify from 'slugify';
 
 const connection = require('../../database/connection');
 
 export default {
-    async listarProdutos(){
-        const produtos = await connection('produtos').select('*')
+	async listarProdutos() {
+		const produtos = await connection('produtos')
+			.where('is_enabled', true)
+			.select('*');
 
-        if(!produtos.length)
-            throw new DataNotFoundException('Nenhum dado encontrado');
-        
-        return produtos;
-    },
+		return produtos;
+	},
 
-    async getProduto(req){
-        const { url } = req.query;
-        const produto = await connection('produtos').select('*').where('url', url).first();
-        return produto;
-    },
+	async getProduto(req) {
+		const { url } = req.query;
+		const produto = await connection('produtos')
+			.select('*')
+			.where('url', url)
+			.first();
 
-    async novoProduto(req){
-        let { produto } = req.body;
-        produto.custo = parseFloat(produto.custo);
-        produto.peso = parseFloat(produto.peso);
-        produto.preco = parseFloat(produto.preco);
-        produto.estoque = parseInt(produto.estoque, 10);
-        produto.url = slugify(produto.nome, {remove: /[*+~.()'"!:@]/g, lower: true});
+		if(!produto)
+      throw { message: 'Este produto não existe.' };
+    else
+			return produto;
+	},
 
-        const novo = await connection('produtos').insert(produto, 'produto_id');
-        return novo;
-    },
+	async novoProduto(req) {
+		let { produto } = req.body;
+		produto.custo = parseFloat(produto.custo);
+		produto.peso = parseFloat(produto.peso);
+		produto.preco = parseFloat(produto.preco);
+		produto.estoque = parseInt(produto.estoque, 10);
+		produto.url = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
 
-    async deletarProduto(req){
-        const { id } = req.body;
-        const deletar = await connection('produtos').where('produto_id', id).del('produto_id');
+		// force is_enabled
+		produto.is_enabled = true;
 
-        return deletar;
-    },
+		const novo = await connection('produtos')
+			.insert(produto, 'produto_id');
+		return novo;
+	},
 
-    async atualizarProduto(req){
-        const { produto } = req.body;
-        const atualizar = await connection('produtos').where('produto_id', produto.produto_id).update(produto, 'produto_id');
+	async deletarProduto(req) {
+		const { id } = req.body;
+		
+		const atualizar = await connection('produtos')
+			.where('produto_id', id)
+			.update({ is_enabled: false });
 
-        return atualizar;
-    }
+		return atualizar;
+	},
+
+	async atualizarProduto(req) {
+		const { produto } = req.body;
+		const atualizar = await connection('produtos').where('produto_id', produto.produto_id).update(produto, 'produto_id');
+
+		return atualizar;
+	}
 }

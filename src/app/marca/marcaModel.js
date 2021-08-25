@@ -8,21 +8,20 @@ export default {
       .where('is_enabled', true)
       .select('*')
 
-    if (!marcas.length) {
-      throw new DataNotFoundException('Nenhum dado encontrado');
-    }
     return marcas;
   },
 
   async listarMarca(req){
     const { id } = req.query;
-
     const marca = await connection('marcas')
       .where('marca_id', id)
       .select('*')
       .first();
 
-    return marca;
+    if(!marca)
+      throw { message: 'Esta marca não existe.' };
+    else
+      return marca;
   },
 
   async deletarMarca(req) {

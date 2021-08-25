@@ -4,13 +4,9 @@ const connection = require('../../database/connection');
 
 export default {
   async listarModelos() {
-    const modelos = await connection('modelos').select('*')
-
-    if (!modelos.length) {
-      throw new DataNotFoundException('Nenhum dado encontrado');
-    }
-
-    // console.log({modelos})
+    const modelos = await connection('modelos')
+      .where('is_enabled', true)
+      .select('*')
     return modelos;
   },
 
@@ -21,13 +17,16 @@ export default {
       .where('modelo_id', id)
       .select('*');
     
-    if(em_uso.length)
-      throw { message: "Impossível deletar, alguns produtos utilizam deste modelo" }
+    if(em_uso.length){
+      const atualizar = await connection('modelos')
+        .where('modelo_id', id)
+        .update({ is_enabled: false });
+      return atualizar;
+    }
     else{
       const deletar = await connection('modelos')
         .where('modelo_id', id)
         .del('modelo_id');
-
       return deletar;
     }
   },
@@ -53,6 +52,10 @@ export default {
 
   async criarModelo(req) {
     const { modelo } = req.body;
+
+    // forçar is_enabled
+    modelo.is_enabled = true;
+
     const repetido = await connection('modelos')
       .where('modelo', modelo.modelo)
       .select('*')
@@ -74,6 +77,9 @@ export default {
       .select('*')
       .first();
 
-    return modelo;
+    if(!modelo)
+      throw { message: "Este modelo não existe." };
+    else
+      return modelo;
   }
 }
