@@ -12,10 +12,10 @@ class TamanhoRouter {
       let dados;
       try{
         dados = await service.handleListarTamanhos();
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados});
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -23,10 +23,10 @@ class TamanhoRouter {
       let dados;
       try {
         dados = await service.handleListarTamanho(req);
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -37,7 +37,7 @@ class TamanhoRouter {
         res.status(200).json({ success:true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -59,7 +59,7 @@ class TamanhoRouter {
         res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     })
   }

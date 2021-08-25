@@ -12,10 +12,10 @@ class MotivosRouter {
       let dados;
       try{
         dados = await service.handleVerMotivos();
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -23,10 +23,10 @@ class MotivosRouter {
       let dados;
       try{
         dados = await service.handleVerMotivo(req);
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -34,10 +34,10 @@ class MotivosRouter {
       let dados;
       try{
         dados = await service.handleAtualizar(req);
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -45,10 +45,10 @@ class MotivosRouter {
       let dados;
       try{
         dados = await service.handleDeletar(req);
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     });
 
@@ -56,10 +56,10 @@ class MotivosRouter {
       let dados;
       try{
         dados = await service.handleNovoMotivo(req);
-        res.status(200).json(dados);
+        res.status(200).json({ success: true, data: dados });
       }
       catch(err){
-        res.status(400).json({ success: false, message: err.message });
+        res.status(200).json({ success: false, message: err.message });
       }
     })
   }
