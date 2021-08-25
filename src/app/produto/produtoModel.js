@@ -19,9 +19,9 @@ export default {
 			.where('url', url)
 			.first();
 
-		if(!produto)
-      throw { message: 'Este produto não existe.' };
-    else
+		if (!produto)
+			throw { message: 'Este produto não existe.' };
+		else
 			return produto;
 	},
 
@@ -43,7 +43,7 @@ export default {
 
 	async deletarProduto(req) {
 		const { id } = req.body;
-		
+
 		const atualizar = await connection('produtos')
 			.where('produto_id', id)
 			.update({ is_enabled: false });
