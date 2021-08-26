@@ -1,4 +1,5 @@
 const connection = require('../../database/connection');
+import slugify from 'slugify';
 
 export default {
   async verCategorias(){ 
@@ -6,7 +7,27 @@ export default {
     return categorias;
   },
   async verCategoria(req){ return 'foo'},
-  async novaCategoria(req){ return 'foo'},
+
+  async novaCategoria(req){ 
+    const { categoria } = req.body;
+    const ja_existe = await connection('categorias')
+      .where('nome', categoria.nome)
+      .select('*')
+      .first();
+    
+    if(ja_existe)
+      throw { message: 'Já existe uma categoria com esse nome!' };
+    else{
+      // force is_enabled
+      categoria.is_enabled = true;
+      categoria.url = slugify(categoria.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+
+      const novo = await connection('categorias')
+        .insert(categoria, 'categoria_id');
+      return novo;
+    }
+  },
+
   async deletarCategoria(req){ return 'foo'},
   
   async atualizarCategoria(req){
