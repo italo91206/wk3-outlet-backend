@@ -27,10 +27,10 @@ export default {
 
 	async novoProduto(req) {
 		let { produto } = req.body;
-		produto.custo = parseFloat(produto.custo);
-		produto.peso = parseFloat(produto.peso);
-		produto.preco = parseFloat(produto.preco);
-		produto.estoque = parseInt(produto.estoque, 10);
+		if(produto.custo) produto.custo = parseFloat(produto.custo); else produto.custo = 0;
+		if(produto.peso) produto.peso = parseFloat(produto.peso); else produto.peso = 0;
+		if(produto.preco) produto.preco = parseFloat(produto.preco);
+		if(produto.estoque) produto.estoque = parseInt(produto.estoque); else produto.estoque = 0;
 		produto.url = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
 
 		// force is_enabled
