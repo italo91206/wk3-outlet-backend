@@ -25,7 +25,7 @@ class CategoriasRouter {
       }
     });
 
-    this.router.get('/categoria/:id', async(req, res) => {
+    this.router.get('/categoria/', async(req, res) => {
       let dados;
       try{
         dados = await service.handleVerCategoria(req);
@@ -47,7 +47,7 @@ class CategoriasRouter {
       }
     });
 
-    this.router.delete('/deletar/:id', async(req, res) => {
+    this.router.delete('/deletar/', async(req, res) => {
       let dados;
       try{
         dados = await service.handleDeletarCategoria(req);
