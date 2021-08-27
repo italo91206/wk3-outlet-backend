@@ -1,13 +1,14 @@
 import { DataNotFoundException } from '../../utils/exceptions';
 import slugify from 'slugify';
-import multer from 'multer';
 
 const connection = require('../../database/connection');
-const fs = require("fs");
+const fq = require('fs');
+const path = require('path');
+const multer = require('multer');
 
-const upload = multer({
-	dest: "/public/images"
-})
+// const upload = multer({
+// 	dest: '/teste'
+// })
 
 
 export default {
@@ -34,8 +35,6 @@ export default {
 
 	async novoProduto(req) {
 		let { produto } = req.body;
-		let imagens = produto.imagens;
-		delete produto.imagens;
 		
 		if(produto.custo) produto.custo = parseFloat(produto.custo); else produto.custo = 0;
 		if(produto.peso) produto.peso = parseFloat(produto.peso); else produto.peso = 0;
@@ -48,18 +47,6 @@ export default {
 
 		const novo = await connection('produtos')
 			.insert(produto, 'produto_id');
-
-		upload.single("file" /* name attribute of <file> element in your form */)
-		const tempPath = req.file.path;
-    	const targetPath = path.join(__dirname, "./uploads/image.png");
-		if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-			fs.rename(tempPath, targetPath, err => { if (err) throw { message: err };});
-		} 
-		else {
-			fs.unlink(tempPath, err => { if (err) throw { message: err };});
-		}
-		
-		console.log(imagens);
 
 		return novo;
 	},

@@ -12,6 +12,7 @@ import tamanhoRouter from './routes/tamanhos'
 import cupomRouter from './routes/cupons'
 import acertoEstoqueRouter from './routes/acerto-estoque'
 import categoriasRouter from './routes/categorias'
+import imagensRouter from './routes/imagens'
 
 class RouteController {
   constructor() {
@@ -32,6 +33,7 @@ class RouteController {
     this.router.use('/cupom', cupomRouter);
     this.router.use('/acerto-de-estoque', acertoEstoqueRouter);
     this.router.use('/categorias', categoriasRouter);
+    this.router.use('/imagens', imagensRouter);
   }
 }
 
