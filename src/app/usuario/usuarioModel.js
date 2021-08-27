@@ -15,145 +15,75 @@ const connection = require('../../database/connection');
 
 export default {
   async listarUsuarios(){
-    const usuarios = await connection('perfis').select('*');
+    const usuarios = await connection('perfis')
+      .where('is_enabled', true)
+      .select('*');
     return usuarios;
   },
 
   async listarUsuario(req){
-    const { id } = req.body;
-    const usuario = await connection('perfis').select('*').where('id', '=', id).first();
-    return usuario;
+    const { id } = req.query;
+    const usuario = await connection('perfis')
+      .select('*')
+      .where('id', id)
+      .first();
+
+    if(!usuario)
+      throw { message: 'Este usuário não existe.' };
+    else
+      return usuario;
   },
 
   async novoUsuario(req){
-    let response = 'ok';
-    let novo;
     const { usuario } = req.body;
+    const existe_email = await connection('perfis')
+      .where('email', usuario.email)
+      .select('*')
+      .first();
 
-    
-    if(!usuario.email)
-      response = 'Não foi inserido um e-mail válido';
+    if(existe_email)  
+      throw { message: 'Já existe um usuário com este e-mail.' };
+    else if(!usuario.email)
+      throw  { message: 'Não foi inserido um e-mail válido' };
     else if(!usuario.password)
-      response = 'Não foi inserido uma senha válida';
+      throw { message: 'Não foi inserido uma senha válida' };
     else if(!usuario.nome)
-      response = 'Não foi inserido um nome válido.';
+      throw { message: 'Não foi inserido um nome válido.' };
     else if(!usuario.sobrenome)
-      response = 'Não foi inserido um sobrenome válido';
-    
-    if(response == 'ok')
-      novo = await connection('perfis').insert(usuario, 'id');
-    
-    return novo;
+      throw { message: 'Não foi inserido um sobrenome válido' };
+    else{
+      // force is_enabled
+      usuario.is_enabled = true;
+      const novo = await connection('perfis')
+        .insert(usuario, 'id');
+      return novo;
+    }
   },
 
   async deletarUsuario(req){
-    const { id } = req.body;
-    const deletar = await connection('perfis').where('id', id).del('id');
+    const { id } = req.query;
+    const deletar = await connection('perfis')
+      .where('id', id)
+      .del('id');
 
     return deletar;
   },
 
   async atualizarUsuario(req){
     const { usuario } = req.body;
-    const atualizar = await connection('perfis').where('id', usuario.id).update(usuario, 'id');
-    
-    return atualizar;
+
+    const ja_existe = await connection('perfis')
+      .where('email', usuario.email)
+      .first();
+
+    if(ja_existe)
+      throw { message: 'Já existe uma conta com este e-mail.' };
+    else{
+      const atualizar = await connection('perfis')
+        .where('id', usuario.id)
+        .update(usuario, 'id');
+      
+      return atualizar;
+    }
   }
-
-  // async updateUsuario(req) {
-  //   const { id } = req.params;
-  //   const usuario = { ...req.body };
-
-  //   const usuarioFromDB = await connection('usuario') // acessa a tabela
-  //     .where({ email: usuario.email })
-  //     .first();
-
-  //   if (usuarioFromDB) {
-  //     if (usuarioFromDB.usuario_id != id) {
-  //       throw new CredentialsExistenteException();
-  //     }
-  //   }
-
-  //   usuario.senha = encryptPassword(usuario.senha);
-  //   delete usuario.confirmaSenha;
-
-  //   await connection('usuario').update(usuario).where('usuario_id', id);
-
-  //   return {
-  //     success: true,
-  //     message: 'Cadastro alterado com sucesso',
-  //   };
-  // },
-
-  // async getUsuario() {
-  //   const usuarios = await connection('usuario').select('*');
-
-  //   if (!usuarios.length) {
-  //     throw new DataNotFoundException('Nenhum dado encontrado');
-  //   }
-  //   return usuarios;
-  // },
-
-  // async getUsuarioId(req) {
-  //   const { id } = req.params;
-  //   const usuario = await connection('usuario')
-  //     .select('*')
-  //     .where('usuario_id', id);
-
-  //   if (!usuario.length) {
-  //     throw new DataNotFoundException('Nenhum dado encontrado');
-  //   }
-  //   return usuario;
-  // },
-
-  // async deleteUsuario(req) {
-  //   const { id } = req.params;
-
-  //   const usuario = await connection('usuario')
-  //     .where('usuario_id', id)
-  //     .select('usuario')
-  //     .first();
-
-  //   if (usuario === undefined)
-  //     throw new DataNotFoundException('Usuario não cadastrado');
-
-  //   await connection('usuario').where('usuario_id', id).del();
-
-  //   return {
-  //     success: true,
-  //     message: 'Usuario excluido com sucesso',
-  //   };
-  // },
-
-  // async getCountLaudos(req) {
-  //   const { user } = req.body;
-
-  //   const novoCount = await connection('laudos as l')
-  //     .count('laudo_id')
-  //     .innerJoin('usuario as u', 'l.pessoa_id', 'u.pessoa_id')
-  //     .where({ 'u.usuario_id': user, 'l.status_id': 1 })
-  //     .first();
-
-  //   const emAndamentoCount = await connection('laudos as l')
-  //     .count('laudo_id')
-  //     .innerJoin('usuario as u', 'l.pessoa_id', 'u.pessoa_id')
-  //     .where({ 'u.usuario_id': user, 'l.status_id': 2 })
-  //     .first();
-
-  //   const concluidoCount = await connection('laudos as l')
-  //     .count('laudo_id')
-  //     .innerJoin('usuario as u', 'l.pessoa_id', 'u.pessoa_id')
-  //     .where({ 'u.usuario_id': user, 'l.status_id': 3 })
-  //     .first();
-
-  //   const laudoStatus = {
-  //     newReports: novoCount.count,
-  //     inProgressReports: emAndamentoCount.count,
-  //     doneReports: concluidoCount.count,
-  //   };
-
-  //   return {
-  //     laudoStatus,
-  //   };
-  // },
 };

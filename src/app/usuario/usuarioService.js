@@ -42,34 +42,4 @@ export default {
     const dados = await model.atualizarUsuario(req);
     return dados;
   }
-
-  // async handleAlteraRequest(req) {
-  //   const { email, senha, confirmaSenha } = { ...req.body };
-
-  //   valida(email, senha, confirmaSenha);
-
-  //   const usuario = await model.updateUsuario(req);
-  //   return usuario;
-  // },
-
-  // async handleDeleteRequest(req) {
-  //   const usuario = await model.deleteUsuario(req);
-  //   return usuario;
-  // },
-
-  // async handleBuscaUsuarioRequest() {
-  //   const usuario = await model.getUsuario();
-  //   return parseObjectToCamelCase(usuario);
-  // },
-
-  // async handleBuscaUsuarioIdRequest(req) {
-  //   const usuario = await model.getUsuarioId(req);
-  //   return parseObjectToCamelCase(usuario);
-  // },
-
-  // async handleCountLaudosRequest(req) {
-  //   const countLaudos = await model.getCountLaudos(req);
-
-  //   return countLaudos;
-  // },
 };
