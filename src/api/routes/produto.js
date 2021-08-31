@@ -71,7 +71,19 @@ class ProdutoRouter {
 				res.status(200).json({ success: true, data: dados });
 			}
 			catch(err){
-				res.status(200).json({ success: false, data: dados });
+				res.status(200).json({ success: false, message: err.message });
+			}
+		});
+
+		this.router.get('/filhos', async(req, res) => {
+			let dados;
+			try{
+				const { id } = req.query;
+				dados = await service.handleGetFilhos(id);
+				res.status(200).json({ success: true, data: dados });
+			}
+			catch(err){
+				res.status(200).json({ success: false, message: err.message });
 			}
 		})
 	}

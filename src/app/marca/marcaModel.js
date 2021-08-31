@@ -51,14 +51,13 @@ export default {
     const { marca } = req.body;
     
     const repetido = await connection('marcas')
+      .whereNot('marca_id', marca.marca_id)
       .where('marca', marca.marca)
       .select('*')
       .first();
     
-    if(repetido){
-      if(repetido.marca_id != marca.marca_id && marca.marca == marca.marca)
-        throw { message: "Já existe uma marca com esse nome!" };
-    }
+    if(repetido)
+      throw { message: "Já existe uma marca com esse nome!" };
     else{
       const atualizar = await connection('marcas')
       .where('marca_id', marca.marca_id)
@@ -77,6 +76,9 @@ export default {
     if(repetido)
       throw { message: "Já existe uma marca com esse nome!" };
     else{
+      // forçar is_enabled
+      marca.is_enabled = true;
+
       const novo = await connection('marcas')
       .insert(marca, 'marca_id')
 

@@ -47,11 +47,12 @@ export default {
     const  { tamanho } = req.body;
 
     const repetido = await connection('tamanhos')
+      .whereNot('tamanho_id', tamanho.tamanho_id)
       .where('tamanho', tamanho.tamanho)
       .select('*')
       .first();
     
-    if(repetido && repetido.tamanho_id != tamanho.tamanho_id && repetido.tamanho == tamanho.tamanho)
+    if(repetido)
       throw { message: "Já existe esse tamanho!" };
 
     const atualizar = await connection('tamanhos')
@@ -60,14 +61,24 @@ export default {
 
     return atualizar;
   },
+
   async novoTamanho(req) { 
     const { tamanho } = req.body;
 
-    // forçar is_enabled
-    tamanho.is_enabled = true;
+    const repetido = await connection('tamanhos')
+      .where('tamanho', tamanho.tamanho)
+      .select('*')
+      .first();
+    
+    if(repetido)
+      throw { message: "Já existe esse tamanho!" };
+    else{
+      // forçar is_enabled
+      tamanho.is_enabled = true;
 
-    const novo = await connection('tamanhos')
-      .insert(tamanho, 'tamanho_id');
-    return novo;
+      const novo = await connection('tamanhos')
+        .insert(tamanho, 'tamanho_id');
+      return novo;
+    }
   }
 }

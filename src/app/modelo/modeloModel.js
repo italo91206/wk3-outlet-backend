@@ -34,6 +34,7 @@ export default {
   async editarModelo(req) {
     const { modelo } = req.body;
     const repetido = await connection('modelos')
+      .whereNot('modelo_id', modelo.modelo_id)
       .where('modelo', modelo.modelo)
       .select('*')
       .first();
@@ -51,12 +52,10 @@ export default {
   },
 
   async criarModelo(req) {
-    const { modelo } = req.body;
-
-    // forçar is_enabled
-    modelo.is_enabled = true;
+    const { modelo } = req.body;  
 
     const repetido = await connection('modelos')
+      .whereNot('modelo_id', modelo.modelo_id)
       .where('modelo', modelo.modelo)
       .select('*')
       .first();
@@ -64,6 +63,9 @@ export default {
     if(repetido)
       throw { message: "Já existe um modelo com esse nome"};
     else{
+      // forçar is_enabled
+      modelo.is_enabled = true;
+      
       const novo = await connection('modelos')
         .insert(modelo, 'modelo_id');
       return novo;

@@ -72,8 +72,8 @@ export default {
 				novo_produto.nome = variacao.nome;
 				novo_produto.produto_pai = parseInt(novo);
 				novo_produto.url = slugify(novo_produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
-
-				console.log(`novo pai: ${novo_produto.produto_pai}`);
+				novo_produto.tipo_produto = 'simples';
+				// console.log(`novo pai: ${novo_produto.produto_pai}`);
 				let nova_variacao = await connection('produtos').insert(novo_produto, 'produto_id');
 			})
 		}
@@ -143,5 +143,12 @@ export default {
 			.first();
 
 		return url;
+	},
+
+	async getFilhos(id){
+		const filhos = await connection('produtos')
+			.where('produto_pai', id)
+			.select('nome', 'sku', 'cor_id', 'tamanho_id');
+		return filhos;
 	}
 }

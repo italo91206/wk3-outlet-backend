@@ -29,5 +29,10 @@ export default {
     async handleGetUrlById(id){
         const url = await model.getUrlById(id);
         return url;
-    }
+    },
+
+    async handleGetFilhos(id){
+        const filhos = await model.getFilhos(id);
+        return filhos
+    },
 }

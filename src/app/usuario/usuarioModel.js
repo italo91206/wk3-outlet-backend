@@ -64,7 +64,7 @@ export default {
     const { id } = req.query;
     const deletar = await connection('perfis')
       .where('id', id)
-      .del('id');
+      .update({ is_enabled: false })
 
     return deletar;
   },
@@ -73,6 +73,7 @@ export default {
     const { usuario } = req.body;
 
     const ja_existe = await connection('perfis')
+      .whereNot('id', usuario.id)
       .where('email', usuario.email)
       .first();
 

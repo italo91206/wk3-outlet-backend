@@ -57,6 +57,9 @@ export default {
     if (repetido)
       throw { message: "Já existe uma cor com esse nome!" };
 
+    // force is_enabled
+    cor.is_enabled = true;
+
     const novo = await connection('cores').insert(cor, 'cor_id');
     return novo;
   },
@@ -66,9 +69,10 @@ export default {
 
     const repetido = await connection('cores')
       .where('cor', cor.cor)
+      .whereNot('cor_id', cor.cor_id)
       .first();
 
-    if (repetido && repetido.cor_id != cor.cor_id && repetido.cor == cor.cor)
+    if (repetido)
       throw { message: "Já existe uma cor com esse nome!" };
 
     const atualizar = await connection('cores').where('cor_id', cor.cor_id).update(cor, 'cor_id');

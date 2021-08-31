@@ -32,10 +32,14 @@ export default {
 
   async atualizarCupom(req){
     const {cupom} = req.body;
-    const existe_por_codigo = await this.verificaExistePorCodigo(cupom.codigo);
+    const replica_codigo = await connection('cupons')
+      .where('codigo', cupom.codigo)
+      .whereNot('cupom_id', cupom.cupom_id)
+      .first();
+
     const data_valida = await this.verificaValidadeData(cupom.validade);
   
-    if(existe_por_codigo)
+    if(replica_codigo)
       throw { message: "Já existe um cupom com esse código!" };
     else if(data_valida){
       throw { message: "Data/hora de validade do cupom é inválido"};
