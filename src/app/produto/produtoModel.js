@@ -1,5 +1,6 @@
 import { DataNotFoundException } from '../../utils/exceptions';
 import slugify from 'slugify';
+import { hasUncaughtExceptionCaptureCallback } from 'process';
 
 const connection = require('../../database/connection');
 const fq = require('fs');
@@ -31,30 +32,29 @@ export default {
 			throw { message: 'Este produto não existe.' };
 		else
 			return produto;
-  },
+	},
 
 	async novoProduto(req) {
-    let { produto } = req.body;
-    let variacoes = produto.variacoes.length >= 1 ? produto.variacoes : null;  
+		let { produto } = req.body;
+		let variacoes = produto.variacoes.length >= 1 ? produto.variacoes : null;
 
 		const nome_existente = await connection('produtos')
 			.where('nome', produto.nome)
 			.select('*');
-    
-    delete produto.variacoes;  
-      
-		if(produto.custo) produto.custo = parseFloat(produto.custo); else produto.custo = 0;
-		if(produto.peso) produto.peso = parseFloat(produto.peso); else produto.peso = 0;
-		if(produto.preco) produto.preco = parseFloat(produto.preco);
-		if(produto.estoque) produto.estoque = parseInt(produto.estoque); else produto.estoque = 0;
+
+		delete produto.variacoes;
+
+		if (produto.custo) produto.custo = parseFloat(produto.custo); else produto.custo = 0;
+		if (produto.peso) produto.peso = parseFloat(produto.peso); else produto.peso = 0;
+		if (produto.preco) produto.preco = parseFloat(produto.preco);
+		if (produto.preco && produto.custo) produto.lucro = produto.preco - produto.custo;
+		if (produto.estoque) produto.estoque = parseInt(produto.estoque); else produto.estoque = 0;
 		produto.url = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
-		
-		if(nome_existente.length > 0){
+
+		if (nome_existente.length > 0) {
 			let prox = nome_existente.length + 1;
 			produto.url = `${produto.url}-${prox}`;
 		}
-
-    
 
 		// force is_enabled
 		produto.is_enabled = true;
@@ -62,21 +62,21 @@ export default {
 		const novo = await connection('produtos')
 			.insert(produto, 'produto_id');
 
-    if(variacoes){
-      variacoes.forEach(async (variacao) => {
-        let novo_produto = { ...produto };
-        if(variacao.cor_id)
-          novo_produto.cor_id = variacao.cor_id;
-        if(variacao.tamanho_id)
-          novo_produto.tamanho_id = variacao.tamanho_id;
-        novo_produto.nome = variacao.nome;
-        novo_produto.produto_pai = parseInt(novo);
-        novo_produto.url = slugify(novo_produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+		if (variacoes) {
+			variacoes.forEach(async (variacao) => {
+				let novo_produto = { ...produto };
+				if (variacao.cor_id)
+					novo_produto.cor_id = variacao.cor_id;
+				if (variacao.tamanho_id)
+					novo_produto.tamanho_id = variacao.tamanho_id;
+				novo_produto.nome = variacao.nome;
+				novo_produto.produto_pai = parseInt(novo);
+				novo_produto.url = slugify(novo_produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
 
-        console.log(novo_produto.produto_pai);
-        let nova_variacao = await connection('produtos').insert(novo_produto, 'produto_id');
-      })
-    }
+				console.log(`novo pai: ${novo_produto.produto_pai}`);
+				let nova_variacao = await connection('produtos').insert(novo_produto, 'produto_id');
+			})
+		}
 
 		return novo;
 	},
@@ -84,9 +84,47 @@ export default {
 	async deletarProduto(req) {
 		const { id } = req.body;
 
+		const variacoes = await connection('produtos')
+			.where('produto_pai', id)
+			.select('produto_id');
+
 		const atualizar = await connection('produtos')
 			.where('produto_id', id)
 			.update({ is_enabled: false });
+
+		if(variacoes.length){
+			variacoes.forEach(async (variacao) => {
+				const deletar = await connection('produtos')
+					.where('produto_id', variacao.produto_id)
+					.del();
+			})
+		}
+
+		const imagens = await connection('imagens')
+			.where('produto_id', id)
+			.select('*');
+		
+
+		// só pode realmente apagar as imagens se for exclusão física
+		// mas por enquanto já vamos simular logo de cara.
+		if(imagens){
+			var fs = require('fs');
+			
+			imagens.forEach(async (item) => {
+				// console.log(item.url)
+				var link = item.url;
+				link = link.split('/static/')
+				
+				fs.unlink(`./src/public/${link[1]}`, function(err){
+					if(err) throw err;
+				});
+
+				// console.log(`Deletando: ${item.imagem_id}`);
+				const deletar = await connection('imagens')
+					.where('imagem_id', item.imagem_id)
+					.del();
+			})
+		}
 
 		return atualizar;
 	},
@@ -96,5 +134,14 @@ export default {
 		const atualizar = await connection('produtos').where('produto_id', produto.produto_id).update(produto, 'produto_id');
 
 		return atualizar;
+	},
+
+	async getUrlById(id){
+		const url = await connection('produtos')
+			.where('produto_id', id)
+			.select('url')
+			.first();
+
+		return url;
 	}
 }

@@ -24,5 +24,10 @@ export default {
     async atualizarProduto(req){
         const atualizar = await model.atualizarProduto(req);
         return atualizar;
+    },
+
+    async handleGetUrlById(id){
+        const url = await model.getUrlById(id);
+        return url;
     }
 }
