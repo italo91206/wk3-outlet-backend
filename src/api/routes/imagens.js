@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { middlewares } from '../middlewares';
+import service from '../../app/imagem/imagemService.js'
 
 const multer = require("multer");
 
@@ -26,13 +27,36 @@ class ImagensRouter {
 	}
 
 	routes() {
-		this.router.post('/upload', upload.array('fileimage', 10), (req, res) => {
-			// console.log(req.files);
+		this.router.post('/upload', upload.array('fileimage', 10), async (req, res) => {
+			let nomes = [];
+			let id = req.body.id;
 
-			if (!req.files)
-				res.status(200).json({ success: false, message: 'Algo aconteceu com o upload de imagens.' });
-			else
-				res.status(200).json({ success: true });
+			try {
+				req.files.forEach((item) => {
+					nomes.push(item.filename);
+				})
+
+				const dados = await service.handleGravarEnderecos(nomes, id);
+				if(!req.files)
+					res.status(200).json({ success: false, message: 'Algo aconteceu com o upload de imagens.' });
+				else
+					res.status(200).json({ success: true, data: dados });
+			}
+			catch(err){
+				res.status(200).json({ success: false, message: err.message });
+			}
+		});
+
+		this.router.get('/recuperar', async(req, res) => {
+			let dados;
+			let { id } = req.query;
+			try{
+				dados = await service.handleRecuperarEnderecos(id);
+				res.status(200).json({ success: true, data: dados });
+			}
+			catch(err){
+				res.status(200).json({ success: false, message: err.message });
+			}
 		})
 	}
 }

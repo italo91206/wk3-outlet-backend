@@ -28,6 +28,7 @@ class App {
      */
     routes() {
       this.app.use('', api);
+      this.app.use('/static', express.static('./src/public'));
       this.app.use(httpHandlers);
     }
   }
