@@ -50,6 +50,8 @@ export default {
 		if (produto.preco && produto.custo) produto.lucro = produto.preco - produto.custo;
 		if (produto.estoque) produto.estoque = parseInt(produto.estoque); else produto.estoque = 0;
 		produto.url = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+		if(!produto.sku)
+		produto.sku = produto.url;
 
 		if (nome_existente.length > 0) {
 			let prox = nome_existente.length + 1;
