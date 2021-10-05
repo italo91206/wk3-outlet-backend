@@ -30,12 +30,22 @@ export default {
 
   async atualizarMotivo(req) {
     const { motivo } = req.body;
+    
+    const ja_existe = await connection('motivos')
+      .where('motivo', motivo.motivo)
+      .whereNot('motivo_id', motivo.motivo_id);
 
-    const atualizar = await connection('motivos')
-      .where('motivo_id', motivo.motivo_id)
-      .update(motivo, 'motivo_id');
+    if(ja_existe.length){
+      throw { message: 'Já existe um motivo com este nome.' };
+    }
+    else{
+      const atualizar = await connection('motivos')
+        .where('motivo_id', motivo.motivo_id)
+        .update(motivo, 'motivo_id');
 
-    return atualizar;
+      return atualizar;
+    }
+    
   },
 
   async verMotivo(req) {

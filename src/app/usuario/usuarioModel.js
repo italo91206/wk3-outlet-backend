@@ -15,9 +15,7 @@ const connection = require('../../database/connection');
 
 export default {
   async listarUsuarios(){
-    const usuarios = await connection('perfis')
-      .where('is_enabled', true)
-      .select('*');
+    const usuarios = await connection('perfis').select('*');
     return usuarios;
   },
 
@@ -62,9 +60,24 @@ export default {
 
   async deletarUsuario(req){
     const { id } = req.query;
+
+    const is_admin = await connection('perfis')
+      .where('id', id)
+      .select('isAdmin')
+      .first();
+    
+    if(is_admin.isAdmin){
+      const count = await connection('perfis')
+        .where('isAdmin', true)
+        .select('id');
+      if(count.length == 1){
+        throw { message: 'Não pode apagar a única conta administradora do sistema.' };
+      }
+    }
+    
     const deletar = await connection('perfis')
       .where('id', id)
-      .update({ is_enabled: false })
+      .del('id');
 
     return deletar;
   },

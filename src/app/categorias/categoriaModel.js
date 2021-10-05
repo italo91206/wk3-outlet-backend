@@ -55,21 +55,22 @@ export default {
       .select('*');
 
     if(em_uso.length || filhos.length){
-      const atualizar = await connection('categorias')
-        .where('categoria_id', id)
-        .update({is_enabled: false});
+      throw { message: 'Esta categoria possui categoria filhas!' };
+      // const atualizar = await connection('categorias')
+      //   .where('categoria_id', id)
+      //   .update({is_enabled: false});
 
       // Caso exista categorias que o têm como pai,
       // percorrer por cada filho setando o id 
       // de categoria_pai para null
-      if(filhos.length){
-        filhos.forEach(async (item) => {
-          const atualizar = await connection('categorias')
-            .where('categoria_id', item.categoria_id)
-            .update({categoria_pai: null})
-        })
-      } 
-      return atualizar;
+      // if(filhos.length){
+      //   filhos.forEach(async (item) => {
+      //     const atualizar = await connection('categorias')
+      //       .where('categoria_id', item.categoria_id)
+      //       .update({categoria_pai: null})
+      //   })
+      // } 
+      // return atualizar;
     }
     else{
       const deletar = await connection('categorias')
@@ -82,12 +83,21 @@ export default {
   async atualizarCategoria(req){
     const { categoria } = req.body;
 
-    categoria.url = slugify(categoria.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+    const ja_existe = await connection('categorias')
+      .whereNot('categoria_id', categoria.categoria_id)
+      .where('nome', categoria.nome)
+      .first();
 
-    const atualizar = await connection('categorias')
-      .where('categoria_id', categoria.categoria_id)
-      .update(categoria, 'categoria_id');
-    
-    return atualizar;
+    if(ja_existe)
+      throw { message: 'Já existe uma categoria com esse nome.' };
+    else{
+      categoria.url = slugify(categoria.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+
+      const atualizar = await connection('categorias')
+        .where('categoria_id', categoria.categoria_id)
+        .update(categoria, 'categoria_id');
+      
+      return atualizar;
+    }
   },
 }

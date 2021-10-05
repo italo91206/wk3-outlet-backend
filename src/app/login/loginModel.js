@@ -22,8 +22,12 @@ export default {
     const validateLogin = await this.loginExists(email, password);
 
     if (!validateLogin) {
-      throw new InvalidCredentialsException('Senha incorreta');
+      throw { message: 'Email ou senha estão incorretos.' };
     }
+    else if(!validateLogin.is_enabled)
+      throw { message: 'Esta conta foi desativada.' };
+    else if (!validateLogin.isEmployee && !validateLogin.isAdmin)
+      throw { message: 'Esta conta não possui permissões de acesso.' };
     
     var token = jwt.sign( { usuario: validateLogin} , process.env.SECRET_KEY, 
       {expiresIn: 86400}
