@@ -34,10 +34,7 @@ export default {
       .select('*');
 
     if (em_uso.length) {
-      const atualizar = await connection('cores')
-        .where('cor_id', id)
-        .update({ is_enabled: false });
-      return atualizar;
+      throw { message: 'Não é possível deletar uma cor já em uso.' };
     }
     else {
       const deletar = await connection('cores')
@@ -74,8 +71,18 @@ export default {
 
     if (repetido)
       throw { message: "Já existe uma cor com esse nome!" };
-
-    const atualizar = await connection('cores').where('cor_id', cor.cor_id).update(cor, 'cor_id');
-    return atualizar;
+    else{
+      const em_uso = await connection('produtos')
+        .where('cor_id', cor.cor_id);
+      
+      if(em_uso.length)
+        throw { message: 'Não é possível alterar uma cor já em uso!' };
+      else{
+        const atualizar = await connection('cores')
+          .where('cor_id', cor.cor_id)
+          .update(cor, 'cor_id');
+        return atualizar;
+      }
+    }
   }
 }

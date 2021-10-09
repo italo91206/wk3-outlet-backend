@@ -47,5 +47,25 @@ export default {
         'perfis.nome', 'perfis.nome as usuario'
       );
     return acertos;
+  },
+
+  async acertoPorUsuario(req){
+    const { id } = req.query;
+
+    const acertos = await connection('acerto_estoque')
+    .innerJoin('produtos', 'acerto_estoque.produto_id', 'produtos.produto_id')
+    .innerJoin('perfis', 'acerto_estoque.usuario_id', 'perfis.id')
+    .innerJoin('motivos', 'acerto_estoque.motivo_id', 'motivos.motivo_id')
+    .where('acerto_estoque.usuario_id', id)
+    .select(
+      'acerto_estoque.data',
+      'motivos.motivo',
+      'produtos.nome', 'produtos.nome as produto',
+      'acerto_estoque.valor_anterior',
+      'acerto_estoque.valor_novo',
+      'perfis.nome', 'perfis.nome as usuario'
+    );
+
+    return acertos;
   }
 }

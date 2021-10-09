@@ -85,6 +85,17 @@ class ProdutoRouter {
 			catch(err){
 				res.status(200).json({ success: false, message: err.message });
 			}
+		});
+
+		this.router.delete('/removerVariacao', async(req, res) => {
+			let dados;
+			try {
+				dados = await service.handleRemoverVariacao(req);
+				res.status(200).json({ success: true, data: dados });
+			}
+			catch(err){
+				res.status(200).json({ success: false, message: err.message });
+			}
 		})
 	}
 }

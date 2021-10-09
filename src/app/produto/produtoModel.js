@@ -26,7 +26,11 @@ export default {
 		const produto = await connection('produtos')
 			.select('*')
 			.where('url', url)
-			.first();
+      .first();
+      
+    const filhos = await this.getFilhos(produto.produto_id)
+    if(filhos)
+      produto.variacoes = filhos;
 
 		if (!produto)
 			throw { message: 'Este produto não existe.' };
@@ -36,7 +40,8 @@ export default {
 
 	async novoProduto(req) {
 		let { produto } = req.body;
-		let variacoes = produto.variacoes.length >= 1 ? produto.variacoes : null;
+		let variacoes = null;
+    if(produto.variacoes) variacoes = produto.variacoes;
 
 		const nome_existente = await connection('produtos')
 			.where('nome', produto.nome)
@@ -61,81 +66,142 @@ export default {
 		// force is_enabled
 		produto.is_enabled = true;
 
-		const novo = await connection('produtos')
+		const novo_produto = await connection('produtos')
 			.insert(produto, 'produto_id');
 
-		if (variacoes) {
+		if(variacoes) {
 			variacoes.forEach(async (variacao) => {
-				let novo_produto = { ...produto };
-				if (variacao.cor_id)
-					novo_produto.cor_id = variacao.cor_id;
-				if (variacao.tamanho_id)
-					novo_produto.tamanho_id = variacao.tamanho_id;
-				novo_produto.nome = variacao.nome;
-				novo_produto.produto_pai = parseInt(novo);
-				novo_produto.url = slugify(novo_produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
-				novo_produto.tipo_produto = 'simples';
-				// console.log(`novo pai: ${novo_produto.produto_pai}`);
-				let nova_variacao = await connection('produtos').insert(novo_produto, 'produto_id');
+        const novo = { 
+          produto_id: parseInt(novo_produto),
+          tamanho_id: null,
+          tamanho_nome: null,
+          cor_id: null,
+          cor_nome: null,
+          cor_hexa: null,
+          quantidade: variacao.quantidade,
+        }
+				if(variacao.cor_id){
+          novo.cor_id = variacao.cor_id;
+          novo.cor_nome = variacao.cor;
+        };
+        if(variacao.tamanho_id){
+          novo.tamanho_id = variacao.tamanho_id;
+          novo.tamanho_nome = variacao.tamanho;
+        }
+        
+        console.log(novo);
+
+        let nova_variacao = await connection('variacoes')
+          .insert(novo, 'variacao_id');
 			})
 		}
 
-		return novo;
+		return novo_produto;
 	},
 
 	async deletarProduto(req) {
 		const { id } = req.body;
 
-		const variacoes = await connection('produtos')
-			.where('produto_pai', id)
-			.select('produto_id');
+    const em_uso = await connection('acerto_estoque')
+      .where('produto_id', id);
+    
+    if(em_uso.length){
+      const atualizar = await connection('produtos')
+        .where('produto_id', id)
+        .update({ is_enabled: false });
+    }
+    else{
+      const variacoes = await connection('variacoes')
+        .where('produto_id', id);
 
-		const atualizar = await connection('produtos')
-			.where('produto_id', id)
-			.update({ is_enabled: false });
+      if(variacoes.length){
+        const deletar_variacoes = await connection('variacoes')
+          .where('produto_id', id)
+          .del();
+      }
 
-		if(variacoes.length){
-			variacoes.forEach(async (variacao) => {
-				const deletar = await connection('produtos')
-					.where('produto_id', variacao.produto_id)
-					.del();
-			})
-		}
-
-		const imagens = await connection('imagens')
+      const imagens = await connection('imagens')
 			.where('produto_id', id)
 			.select('*');
 		
+      // só pode realmente apagar as imagens se for exclusão física
+      // mas por enquanto já vamos simular logo de cara.
+      if(imagens){
+        var fs = require('fs');
+        
+        imagens.forEach(async (item) => {
+          // console.log(item.url)
+          var link = item.url;
+          link = link.split('/static/')
+          
+          fs.unlink(`./src/public/${link[1]}`, function(err){
+            if(err) throw err;
+          });
 
-		// só pode realmente apagar as imagens se for exclusão física
-		// mas por enquanto já vamos simular logo de cara.
-		if(imagens){
-			var fs = require('fs');
-			
-			imagens.forEach(async (item) => {
-				// console.log(item.url)
-				var link = item.url;
-				link = link.split('/static/')
-				
-				fs.unlink(`./src/public/${link[1]}`, function(err){
-					if(err) throw err;
-				});
+          // console.log(`Deletando: ${item.imagem_id}`);
+          const deletar = await connection('imagens')
+            .where('imagem_id', item.imagem_id)
+            .del();
+        })
+      }
 
-				// console.log(`Deletando: ${item.imagem_id}`);
-				const deletar = await connection('imagens')
-					.where('imagem_id', item.imagem_id)
-					.del();
-			})
-		}
-
-		return atualizar;
+      const deletar = await connection('produtos')
+        .where('produto_id', id)
+        .del();
+    }
+    
+		return true;
 	},
 
 	async atualizarProduto(req) {
-		const { produto } = req.body;
-		const atualizar = await connection('produtos').where('produto_id', produto.produto_id).update(produto, 'produto_id');
+    const { produto } = req.body;
+    let variacoes = null;
+    if(produto.variacoes) variacoes = produto.variacoes;
+    delete produto.variacoes;
 
-		return atualizar;
+		const existe_sku = await connection('produtos')
+			.where('sku', produto.sku)
+			.whereNot('produto_id', produto.produto_id);
+		
+		if(existe_sku.length)
+			throw { message: 'Já existe um produto com este SKU' };
+		else{
+			const atualizar = await connection('produtos')
+				.where('produto_id', produto.produto_id)
+				.update(produto, 'produto_id');
+
+      if(variacoes){
+        variacoes.forEach(async (variacao) => {
+          const novo = {
+            produto_id: produto.produto_id,
+            tamanho_id: null,
+            cor_id: null,
+            quantidade: variacao.quantidade,
+          }
+          if(variacao.cor_id){
+            novo.cor_id = variacao.cor_id;
+            novo.cor_nome = variacao.cor;
+          };
+          if(variacao.tamanho_id){
+            novo.tamanho_id = variacao.tamanho_id;
+            novo.tamanho_nome = variacao.tamanho;
+          }
+          if(variacao.variacao_id){
+            let nova_variacao = await connection('variacoes')
+              .where('variacao_id', variacao.variacao_id)
+              .update(novo, 'variacao_id');
+          }
+          else{
+            console.log('vou adicionar uma nova variação')
+            console.log(novo);
+            let nova_variacao = await connection('variacoes')
+              .insert(novo, 'variacao_id');
+          }
+        })
+      }
+
+			return atualizar;
+		}	
 	},
 
 	async getUrlById(id){
@@ -148,9 +214,19 @@ export default {
 	},
 
 	async getFilhos(id){
-		const filhos = await connection('produtos')
-			.where('produto_pai', id)
-			.select('nome', 'sku', 'cor_id', 'tamanho_id');
+		const filhos = await connection('variacoes')
+      .where('produto_id', id);
+     
 		return filhos;
-	}
+  },
+  
+  async removerVariacao(req){
+    const { id } = req.query;
+    
+    const response = await connection('variacoes')
+      .where('variacao_id', id)
+      .del();
+
+    return response;
+  }
 }

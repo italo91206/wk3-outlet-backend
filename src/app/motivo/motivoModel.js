@@ -15,10 +15,7 @@ export default {
       .select('*');
 
     if(em_uso.length){
-      const atualizar = await connection('motivos')
-        .where('motivo_id', id)
-        .update({ is_enabled: false });
-      return atualizar;
+      throw { message: 'Não é possível deletar um motivo já em uso.' };
     }
     else{
       const deletar = await connection('motivos')
@@ -39,11 +36,18 @@ export default {
       throw { message: 'Já existe um motivo com este nome.' };
     }
     else{
-      const atualizar = await connection('motivos')
-        .where('motivo_id', motivo.motivo_id)
-        .update(motivo, 'motivo_id');
+      const ja_em_uso = await connection('acerto_estoque')
+        .where('motivo_id', motivo.motivo_id);
 
-      return atualizar;
+      if(ja_em_uso.length)
+        throw { message: 'Você não pode editar um motivo já em uso.' };
+      else {
+        const atualizar = await connection('motivos')
+          .where('motivo_id', motivo.motivo_id)
+          .update(motivo, 'motivo_id');
+
+        return atualizar;
+      }
     }
     
   },
@@ -64,12 +68,19 @@ export default {
   async novoMotivo(req) {
     const { motivo } = req.body;
 
-    // forcar is_enabled
-    motivo.is_enabled = true;
+    const ja_existe = await connection('motivos')
+      .where('motivo', motivo.motivo);
+    if(ja_existe.length){
+      throw { message: 'Já existe um motivo com este nome.' };
+    }
+    else {
+      // forcar is_enabled
+      motivo.is_enabled = true;
 
-    const novo = await connection('motivos')
-      .insert(motivo, 'motivo_id');
+      const novo = await connection('motivos')
+        .insert(motivo, 'motivo_id');
 
-    return novo;
+      return novo;
+    }
   }
 }

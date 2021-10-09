@@ -25,15 +25,10 @@ export default {
   async deletarTamanho(req) {
     const { id } = req.query;
     const em_uso = await connection('produtos')
-      .where('tamanho_id', id)
-      .select('*');
+      .where('tamanho_id', id);
 
     if(em_uso.length){
-      const atualizar = await connection('tamanhos')
-        .where('tamanho_id', id)
-        .update({ is_enabled: false });
-
-      return atualizar;
+      throw { message: 'Não é possível deletar um tamanho já em uso.' };
     }
     else{
       const deletar = await connection('tamanhos')
@@ -48,18 +43,24 @@ export default {
 
     const repetido = await connection('tamanhos')
       .whereNot('tamanho_id', tamanho.tamanho_id)
-      .where('tamanho', tamanho.tamanho)
-      .select('*')
-      .first();
+      .where('tamanho', tamanho.tamanho);
     
-    if(repetido)
+    if(repetido.length)
       throw { message: "Já existe esse tamanho!" };
+    else{
+      const em_uso = await connection('produtos')
+        .where('tamanho_id', tamanho.tamanho_id);
 
-    const atualizar = await connection('tamanhos')
-      .where('tamanho_id', tamanho.tamanho_id)
-      .update(tamanho, 'tamanho_id');
+      if(em_uso.length)
+        throw { message: 'Não é possível atualizar um tamanho em uso.' };
+      else{
+        const atualizar = await connection('tamanhos')
+          .where('tamanho_id', tamanho.tamanho_id)
+          .update(tamanho, 'tamanho_id');
 
-    return atualizar;
+        return atualizar;
+      }
+    }
   },
 
   async novoTamanho(req) { 

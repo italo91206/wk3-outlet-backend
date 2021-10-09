@@ -35,4 +35,9 @@ export default {
         const filhos = await model.getFilhos(id);
         return filhos
     },
+
+    async handleRemoverVariacao(req){
+        const remover = await model.removerVariacao(req);
+        return remover;
+    }
 }

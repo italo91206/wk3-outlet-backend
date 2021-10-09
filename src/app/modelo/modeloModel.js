@@ -18,10 +18,7 @@ export default {
       .select('*');
     
     if(em_uso.length){
-      const atualizar = await connection('modelos')
-        .where('modelo_id', id)
-        .update({ is_enabled: false });
-      return atualizar;
+      throw { message: 'Não é possível deletar um modelo já em uso.' };
     }
     else{
       const deletar = await connection('modelos')
@@ -35,19 +32,24 @@ export default {
     const { modelo } = req.body;
     const repetido = await connection('modelos')
       .whereNot('modelo_id', modelo.modelo_id)
-      .where('modelo', modelo.modelo)
-      .select('*')
-      .first();
+      .where('modelo', modelo.modelo);
 
-    if(repetido){
+    if(repetido.length){
       throw { message: "Já existe um modelo com esse nome! "};
     }
     else{
-      const atualizar = await connection('modelos')
-        .where('modelo_id', modelo.modelo_id)
-        .update(modelo, 'modelo_id');
+      const em_uso = await connection('produtos')
+        .where('modelo_id', modelo.modelo_id);
       
-      return atualizar;
+      if(em_uso.length)
+        throw { message: 'Não é possível alterar um modelo já em uso.' };
+      else{
+        const atualizar = await connection('modelos')
+          .where('modelo_id', modelo.modelo_id)
+          .update(modelo, 'modelo_id');
+        
+        return atualizar;
+      }
     }
   },
 
@@ -55,14 +57,12 @@ export default {
     const { modelo } = req.body;  
 
     const repetido = await connection('modelos')
-      .whereNot('modelo_id', modelo.modelo_id)
       .where('modelo', modelo.modelo)
       .select('*')
-      .first();
 
-    if(repetido)
+    if(repetido.length)
       throw { message: "Já existe um modelo com esse nome"};
-    else{
+    else {
       // forçar is_enabled
       modelo.is_enabled = true;
       
