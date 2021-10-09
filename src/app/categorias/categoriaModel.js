@@ -47,36 +47,23 @@ export default {
     const { id } = req.query;
     
     const em_uso = await connection('produtos')
-      .where('categoria_id', id)
-      .select('*');
+      .where('categoria_id', id);
 
-    const filhos = await connection('categorias')
-      .where('categoria_pai', id)
-      .select('*');
-
-    if(em_uso.length || filhos.length){
-      throw { message: 'Esta categoria possui categoria filhas!' };
-      // const atualizar = await connection('categorias')
-      //   .where('categoria_id', id)
-      //   .update({is_enabled: false});
-
-      // Caso exista categorias que o têm como pai,
-      // percorrer por cada filho setando o id 
-      // de categoria_pai para null
-      // if(filhos.length){
-      //   filhos.forEach(async (item) => {
-      //     const atualizar = await connection('categorias')
-      //       .where('categoria_id', item.categoria_id)
-      //       .update({categoria_pai: null})
-      //   })
-      // } 
-      // return atualizar;
+    if(em_uso.length){
+      throw { message: 'Não é possível deletar uma categoria em uso.' };
     }
     else{
-      const deletar = await connection('categorias')
-        .where('categoria_id', id)
-        .del('categoria_id')
-      return deletar;
+      const filhos = await connection('categorias')
+        .where('categoria_pai', id);
+
+      if(filhos.length)
+        throw { message: 'Não é possível deletar uma categoria com filhos.' };
+      else{
+        const deletar = await connection('categorias')
+          .where('categoria_id', id)
+          .del('categoria_id')
+        return deletar;
+      }
     }
   },
   
@@ -85,19 +72,33 @@ export default {
 
     const ja_existe = await connection('categorias')
       .whereNot('categoria_id', categoria.categoria_id)
-      .where('nome', categoria.nome)
-      .first();
+      .where('nome', categoria.nome);
 
-    if(ja_existe)
+    if(ja_existe.length)
       throw { message: 'Já existe uma categoria com esse nome.' };
     else{
-      categoria.url = slugify(categoria.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
-
-      const atualizar = await connection('categorias')
-        .where('categoria_id', categoria.categoria_id)
-        .update(categoria, 'categoria_id');
+      const em_uso = await connection('produtos')
+        .where('categoria_id', categoria.categoria_id);
       
-      return atualizar;
+      if(em_uso.length)
+        throw { message: 'Não é possível alterar uma categoria em uso.' };
+      else{
+        
+        const filhos = await connection('categorias')
+          .where('categoria_pai', categoria.categoria_id);
+
+        if(filhos.length)
+          throw { message: 'Não é possível alterar uma categoria com filhos.' };
+        else{
+          categoria.url = slugify(categoria.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+
+          const atualizar = await connection('categorias')
+            .where('categoria_id', categoria.categoria_id)
+            .update(categoria, 'categoria_id');
+          
+          return atualizar;
+        }
+      }
     }
   },
 }
