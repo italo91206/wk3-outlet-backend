@@ -28,6 +28,17 @@ class AcertoEstoqueRouter {
       catch(err){
         res.status(200).json({ success: false, message: err.message });
       }
+    });
+
+    this.router.get('/acertosPorUsuario', async(req, res) => {
+      let dados;
+      try {
+        dados = await service.handleAcertoPorUsuario(req);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch(err){
+        res.status(200).json({ success: false, message: err.message });
+      }
     })
   }
 }
