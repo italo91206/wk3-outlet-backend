@@ -1,7 +1,7 @@
 
 exports.up = function(knex) {
     return knex.schema.alterTable('variacoes', function(table){
-        table.string('cor_nome', 45);
+      table.string('cor_nome', 45);
     })
 };
 
