@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { middlewares } from '../middlewares';
+// import { middlewares } from '../middlewares';
 import service from './../../app/checkout/checkoutService';
 
 class CheckoutRouter {
   constructor(){
     this.router = Router();
-    this.middlewares();
+    //this.middlewares();
     this.routes();
   }
 
-  middlewares(){
-    this.router.use(middlewares);
-  }
+  // middlewares(){
+  //   this.router.use(middlewares);
+  // }
 
   routes(){
     this.router.get('/teste', async(req, res) => {
