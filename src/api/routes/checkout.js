@@ -14,7 +14,7 @@ class CheckoutRouter {
   // }
 
   routes(){
-    this.router.get('/teste', async(req, res) => {
+    this.router.post('/teste', async(req, res) => {
       let dados = req.body;
       try {
         console.log(dados);
