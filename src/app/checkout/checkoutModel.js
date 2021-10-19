@@ -69,7 +69,46 @@ export default {
   },
 
   async atualizarVenda(data){
-    let id_pagamento = data.data.id;
+    let id_pagamento = data.body.data.id;
+    let tipo_evento = data.body.action;
+
     console.log(`Pagamento identificado: ${id_pagamento}`);
+    console.log( `Tipo de evento: ${tipo_evento}`);
+
+    if(tipo_evento == 'payment.created'){
+      let order_id = await this.pagamentoCriado(id_pagamento)
+        .then((order_id) => { return order_id });
+
+      // console.log(order_id)
+      if(order_id.status == 'approved'){
+        let preference_id = await this.procurarOrdem(order_id.order.id)
+          .then((preference_id) => { return preference_id });
+        
+        const response = await connection('vendas')
+          .where('preference_id', preference_id)
+          .update({ status: 'aprovado' })
+      }
+      // console.log(`payment_id: ${id_pagamento}`)
+      // console.log(`order_id: ${order_id}`)
+      // console.log(`preference_id: ${preference_id}`)
+    }
+  },
+
+  async pagamentoCriado(id_pagamento){
+    const response = await mercadopago.payment.findById(id_pagamento)
+      .then((response) => {
+        response = response.body;
+        return response;
+      })
+    return response;
+  },
+
+  async procurarOrdem(order_id){
+    const response = await mercadopago.merchant_orders.findById(order_id)
+      .then((response) => {
+        response = response.body.preference_id;
+        return response;
+      });
+    return response;
   }
 }

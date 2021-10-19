@@ -6,7 +6,8 @@ export default {
     return venda;
   },
 
-  async handleNotification(data){
+  async handleNotification(req){
     const notificacao = await model.atualizarVenda(req);
+    return notificacao;
   }
 }

@@ -15,7 +15,7 @@ class CheckoutRouter {
 
   routes(){
     this.router.post('/notification', async(req, res) => {
-      let dados = req.body;
+      let dados;
       try {
         dados = await service.handleNotification(req);
         res.status(200).json({ success: true });
