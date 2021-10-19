@@ -24,7 +24,7 @@ export default {
 
   async deletarTamanho(req) {
     const { id } = req.query;
-    const em_uso = await connection('produtos')
+    const em_uso = await connection('variacoes')
       .where('tamanho_id', id);
 
     if(em_uso.length){
@@ -48,7 +48,7 @@ export default {
     if(repetido.length)
       throw { message: "Já existe esse tamanho!" };
     else{
-      const em_uso = await connection('produtos')
+      const em_uso = await connection('variacoes')
         .where('tamanho_id', tamanho.tamanho_id);
 
       if(em_uso.length)

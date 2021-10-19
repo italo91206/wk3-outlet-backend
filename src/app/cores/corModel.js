@@ -29,7 +29,7 @@ export default {
 
   async deletarCor(req) {
     const { id } = req.query;
-    const em_uso = await connection('produtos')
+    const em_uso = await connection('variacoes')
       .where('cor_id', id)
       .select('*');
 
@@ -72,7 +72,7 @@ export default {
     if (repetido)
       throw { message: "Já existe uma cor com esse nome!" };
     else{
-      const em_uso = await connection('produtos')
+      const em_uso = await connection('variacoes')
         .where('cor_id', cor.cor_id);
       
       if(em_uso.length)

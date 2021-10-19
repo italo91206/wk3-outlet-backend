@@ -192,8 +192,8 @@ export default {
               .update(novo, 'variacao_id');
           }
           else{
-            console.log('vou adicionar uma nova variação')
-            console.log(novo);
+            // console.log('vou adicionar uma nova variação')
+            // console.log(novo);
             let nova_variacao = await connection('variacoes')
               .insert(novo, 'variacao_id');
           }

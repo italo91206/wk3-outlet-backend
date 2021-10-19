@@ -12,7 +12,7 @@ export default {
     let usuario = req.headers.authorization;
     usuario = jwt.decode(usuario);
 
-    console.log(req.body);
+    // console.log(req.body);
     let produtos = req.body;
     let valores = [];
     
@@ -36,6 +36,7 @@ export default {
       usuario_id: usuario.usuario.id,
       cupom_id: null,
       endereco_id: null,
+      status: 'pendente',
     }
 
     const venda = await connection('vendas')

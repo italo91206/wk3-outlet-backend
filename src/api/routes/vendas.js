@@ -24,6 +24,17 @@ class VendasRouter {
         res.status(200).json({ success: false, message: err.message });
       }
     });
+
+    this.router.get('/venda', async(req, res) => {
+      let dados;
+      try{
+        dados = await service.handleRecuperarVenda(req);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch(err){
+        res.status(200).json({ success: false, message: err.message });
+      }
+    })
   }
 }
 

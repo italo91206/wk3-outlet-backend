@@ -6,7 +6,21 @@ export default {
       .innerJoin('perfis', 'vendas.usuario_id', 'perfis.id')
       .select('*', 'perfis.nome as cliente')
     
-    console.log(vendas);
+    // console.log(vendas);
     return vendas;
+  },
+
+  async recuperarVenda(req){
+    const {id} = req.query;
+
+    
+
+    const venda = await connection('vendas')
+      .where('venda_id', id)
+      .first();
+
+    console.log(venda);
+
+    return venda;
   }
 }
