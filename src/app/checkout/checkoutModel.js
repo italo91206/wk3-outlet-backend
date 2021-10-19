@@ -12,6 +12,7 @@ export default {
     let usuario = req.headers.authorization;
     usuario = jwt.decode(usuario);
 
+    console.log(req.body);
     let produtos = req.body;
     let valores = [];
     
@@ -47,7 +48,9 @@ export default {
           unit_price: soma.sum,
           quantity: 1,
         }
-      ]
+      ],
+      statement_descriptor: 'WK3OUTLET',
+      // notification_url: 'https://wk3-outlet-backend.herokuapp.com/checkout/teste/',
     };
 
     const response = await mercadopago.preferences.create(preference)
@@ -55,6 +58,17 @@ export default {
         return error;
       });
 
+    let preference_id = response.body.id; 
+
+    const atualizar = await connection('vendas')
+      .where('venda_id', venda[0])
+      .update('preference_id', preference_id);
+
     return response.body.init_point;
+  },
+
+  async atualizarVenda(data){
+    let id_pagamento = data.data.id;
+    console.log(`Pagamento identificado: ${id_pagamento}`);
   }
 }

@@ -14,11 +14,11 @@ class CheckoutRouter {
   // }
 
   routes(){
-    this.router.post('/teste', async(req, res) => {
+    this.router.post('/notification', async(req, res) => {
       let dados = req.body;
       try {
-        console.log(dados);
         res.status(200).json({ success: true });
+        dados = await service.handleNotification(req);
       }
       catch(err){
         res.status(200).json({ success: false, message: err.message });
