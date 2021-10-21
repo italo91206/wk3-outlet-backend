@@ -9,5 +9,10 @@ export default {
     async handleRecuperarEnderecos(id){
         const enderecos = await model.recuperarEnderecos(id);
         return enderecos;
+    },
+
+    async handleSalvarImagens(files, id){
+        const imagens = await model.salvarImagens(files, id);
+        return imagens;
     }
 }

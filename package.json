@@ -42,6 +42,7 @@
     "objection": "^2.2.17",
     "pg": "^8.0.3",
     "slugify": "^1.6.0",
+    "ssh2-sftp-client": "^7.1.0",
     "sucrase": "^3.13.0",
     "winston": "^3.2.1"
   },
