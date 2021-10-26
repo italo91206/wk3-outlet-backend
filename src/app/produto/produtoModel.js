@@ -51,7 +51,7 @@ export default {
     if(produto.variacoes) variacoes = produto.variacoes;
 
 		const nome_existente = await connection('produtos')
-			.where('nome', produto.nome)
+			.where('nome_produto', produto.nome_produto)
 			.select('*');
 
 		delete produto.variacoes;
@@ -61,7 +61,7 @@ export default {
 		if (produto.preco) produto.preco = parseFloat(produto.preco);
 		if (produto.preco && produto.custo) produto.lucro = produto.preco - produto.custo;
 		if (produto.estoque) produto.estoque = parseInt(produto.estoque); else produto.estoque = 0;
-		produto.url = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+		produto.url = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
 		if(!produto.sku)
 		produto.sku = produto.url;
 
@@ -96,7 +96,7 @@ export default {
           novo.tamanho_nome = variacao.tamanho;
         }
         
-        console.log(novo);
+        // console.log(novo);
 
         let nova_variacao = await connection('variacoes')
           .insert(novo, 'variacao_id');

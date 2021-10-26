@@ -5,13 +5,13 @@ import service from './../../app/catalogo/catalogoService';
 class CatalogoRouter {
   constructor() {
     this.router = Router();
-    this.middlewares();
+    // this.middlewares();
     this.routes();
   }
 
-  middlewares() {
-    this.router.use(middlewares);
-  }
+  // middlewares() {
+  //   this.router.use(middlewares);
+  // }
 
   routes() {
     this.router.get('/produto', async (req, res) => {

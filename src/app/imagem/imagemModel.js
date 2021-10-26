@@ -31,11 +31,11 @@ export default {
     // console.log(files)
     const produto = await connection('produtos')
       .where('produto_id', id)
-      .select('nome')
+      .select('nome_produto')
       .first();
     const caminhos = [];
     
-    const nome = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+    const nome = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
     console.log(nome);
     let indice = 1;
     var caminho = path.join(__dirname, '../../public');
