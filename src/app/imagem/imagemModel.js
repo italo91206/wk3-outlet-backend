@@ -33,7 +33,7 @@ export default {
       .where('produto_id', id)
       .select('nome')
       .first();
-    
+    const caminhos = [];
     
     const nome = slugify(produto.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
     console.log(nome);
@@ -49,20 +49,32 @@ export default {
       fs.rename(antes, depois, () => {})
       this.guardaEndereco(novo, id);
       indice++;
+      caminhos.push(depois);
     })
 
-    let Client = require('ssh2-sftp-client');
-    let sftp = new Client();
+    var Client = require('ftp');
+    let ftp = new Client();
 
-    sftp.connect({
+    caminhos.forEach((caminho) => {
+      ftp.on('ready', function() {
+        
+        let arquivo_destino = caminho.split('/')
+        arquivo_destino = arquivo_destino[arquivo_destino.length-1]
+        // console.log(arquivo_destino);
+
+        ftp.put(caminho, arquivo_destino, function(err) {
+          if(err) console.log(err);
+          ftp.end();
+        });
+      });
+    })
+
+    ftp.connect({
       host: process.env.FTP_HOST,
       port: process.env.FTP_PORT,
-      username: process.env.FTP_USER,
+      user: process.env.FTP_USER,
       password: process.env.FTP_PASSWORD
     })
-    // .then(()=> { return sftp.list('') })
-    // .then((data)=> { console.log(data) })
-    .catch((err) => { console.log(err) })
 
     return true;
   },
@@ -76,5 +88,36 @@ export default {
         url: novo,
         produto_id: id
       })
+  },
+
+  async removerImagem(id){
+    const imagem = await connection('imagens')
+      .where('imagem_id', id)
+      .first();
+
+    const deletar = await connection('imagens')
+      .where('imagem_id', id)
+      .del();
+
+    // console.log(imagem.url);
+
+    var Client = require('ftp');
+    let ftp = new Client();
+
+    ftp.on('ready', function(){
+      ftp.delete(imagem.url, (error) => {
+        if(error) console.log(error);
+        ftp.end();
+      })
+    })
+
+    ftp.connect({
+      host: process.env.FTP_HOST,
+      port: process.env.FTP_PORT,
+      user: process.env.FTP_USER,
+      password: process.env.FTP_PASSWORD
+    })
+
+    return true;
   }
 }

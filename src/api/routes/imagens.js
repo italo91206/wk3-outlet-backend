@@ -56,6 +56,19 @@ class ImagensRouter {
       catch (err) {
         res.status(200).json({ success: false, message: err.message });
       }
+    });
+
+    this.router.delete('/remover', async(req, res) => {
+      let dados;
+      let { id } = req.query;
+      
+      try{
+        dados = await service.handleRemoverImagem(id);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch(err){
+        res.status(200).json({ success: false, message: err.message });
+      }
     })
   }
 }
