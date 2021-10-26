@@ -33,6 +33,13 @@ export default {
         produto.variacoes = filhos;
         return produto;
       })
+      .then(async function(produto){
+        const imagens = await connection('imagens')
+          .where('produto_id', produto.produto_id)
+          .select('*');
+        produto.imagens = imagens;
+        return produto;
+      })
     return produto;  
   }
 }

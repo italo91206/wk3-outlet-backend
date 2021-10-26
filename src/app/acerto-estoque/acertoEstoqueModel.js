@@ -41,7 +41,7 @@ export default {
       .select(
         'acerto_estoque.data',
         'motivos.motivo',
-        'produtos.nome', 'produtos.nome as produto',
+        'produtos.nome_produto', 'produtos.nome_produto as produto',
         'acerto_estoque.valor_anterior',
         'acerto_estoque.valor_novo',
         'perfis.nome', 'perfis.nome as usuario'
@@ -60,7 +60,7 @@ export default {
     .select(
       'acerto_estoque.data',
       'motivos.motivo',
-      'produtos.nome', 'produtos.nome as produto',
+      'produtos.nome_produto', 'produtos.nome_produto as produto',
       'acerto_estoque.valor_anterior',
       'acerto_estoque.valor_novo',
       'perfis.nome', 'perfis.nome as usuario'

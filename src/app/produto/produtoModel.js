@@ -14,7 +14,7 @@ const multer = require('multer');
 
 export default {
 	async listarProdutos() {
-		const produtos = await connection('produtos')
+    const produtos = await connection('produtos')
 			.where('is_enabled', true)
 			.select('*');
 
@@ -31,6 +31,13 @@ export default {
     const filhos = await this.getFilhos(produto.produto_id)
     if(filhos)
       produto.variacoes = filhos;
+
+    const imagens = await connection('imagens')
+      .where('produto_id', produto.produto_id)
+      .select('*');
+    
+    if(imagens)
+      produto.imagens = imagens;
 
 		if (!produto)
 			throw { message: 'Este produto não existe.' };
@@ -158,6 +165,7 @@ export default {
     let variacoes = null;
     if(produto.variacoes) variacoes = produto.variacoes;
     delete produto.variacoes;
+    delete produto.imagens;
 
 		const existe_sku = await connection('produtos')
 			.where('sku', produto.sku)
