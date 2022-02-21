@@ -21,7 +21,7 @@ class AuthRoute {
       let user;
       try {
         user = await auth.AuthenticateAndReturnToken(email, password);
-        return res.status(200).json(user);
+        return res.status(200).json({ success: true, data: user });
       }
       catch (err) {
         return res.status(200).json({ success: false, error: err.message });
