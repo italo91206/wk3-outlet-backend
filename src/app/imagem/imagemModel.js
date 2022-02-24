@@ -55,6 +55,8 @@ export default {
     var Client = require('ftp');
     let ftp = new Client();
 
+    console.log('FTP', process.env.FTP_HOST, process.env.FTP_PORT, process.env.FTP_USER, process.env.FTP_PASSWORD)
+
     caminhos.forEach((caminho) => {
       ftp.on('ready', function() {
         
@@ -110,6 +112,8 @@ export default {
         ftp.end();
       })
     })
+
+    console.log('FTP', process.env.FTP_HOST, process.env.FTP_PORT, process.env.FTP_USER, process.env.FTP_PASSWORD)
 
     ftp.connect({
       host: process.env.FTP_HOST,
