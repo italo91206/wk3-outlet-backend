@@ -51,7 +51,7 @@ export default {
         }
       ],
       statement_descriptor: 'WK3OUTLET',
-      notification_url: 'https://wk3-outlet-backend.herokuapp.com/checkout/teste/',
+      notification_url: 'https://wk3-outlet-backend.herokuapp.com/checkout/notification/',
     };
 
     const response = await mercadopago.preferences.create(preference)
