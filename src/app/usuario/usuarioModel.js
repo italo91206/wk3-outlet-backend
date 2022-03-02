@@ -14,6 +14,15 @@ const connection = require('../../database/connection');
 // };
 
 export default {
+  async emailAlreadyInUse(term){
+    console.log('toLowerCase', term.toLowerCase())
+    const email = await connection('perfis')
+      .where('email', term.toLowerCase())
+      .first();
+    
+    return email;
+  },
+
   async listarUsuarios(){
     const usuarios = await connection('perfis').select('*');
     return usuarios;
@@ -96,9 +105,13 @@ export default {
       .where('email', usuario.email)
       .first();
 
-    if(ja_existe)
+    const already_in_use = await this.emailAlreadyInUse(usuario.email)
+    
+    if(already_in_use)
       throw { message: 'Já existe uma conta com este e-mail.' };
-    else{
+    else if(ja_existe)
+      throw { message: 'Já existe uma conta com este e-mail.' };
+    else {
       const atualizar = await connection('perfis')
         .where('id', usuario.id)
         .update(usuario, 'id');
