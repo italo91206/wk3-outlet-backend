@@ -74,6 +74,12 @@ export default {
         throw { message: 'Não pode apagar a única conta administradora do sistema.' };
       }
     }
+
+    const vendas_usuario = await connection('vendas')
+      .where('usuario_id', id)
+    
+    if(vendas_usuario.length > 0)
+      throw { message: 'Não é possível remover usuário com compras efetuadas'}
     
     const deletar = await connection('perfis')
       .where('id', id)
