@@ -6,6 +6,14 @@ import {
 const connection = require('../../database/connection');
 
 export default {
+  async colorAlreadyInUse(term){
+    const color = await connection('cores')
+      .where('cor', term.toLowerCase())
+      .first();
+    
+    return color;
+  },
+
   async getCores(req) {
     const cores = await connection('cores')
       .where('is_enabled', true)
@@ -48,10 +56,12 @@ export default {
     const { cor } = req.body;
 
     const repetido = await connection('cores')
-      .where('cor', cor.cor)
+      .where('cor', cor.cor.toLowerCase())
       .first();
+    
+    const nome_em_uso = await this.colorAlreadyInUse(cor.cor)
 
-    if (repetido)
+    if (repetido || nome_em_uso)
       throw { message: "Já existe uma cor com esse nome!" };
 
     // force is_enabled
@@ -69,7 +79,9 @@ export default {
       .whereNot('cor_id', cor.cor_id)
       .first();
 
-    if (repetido)
+    const nome_em_uso = await this.colorAlreadyInUse(cor.cor)
+
+    if (repetido || nome_em_uso)
       throw { message: "Já existe uma cor com esse nome!" };
     else{
       const em_uso = await connection('variacoes')

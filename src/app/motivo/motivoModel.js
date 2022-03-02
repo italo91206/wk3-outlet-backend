@@ -29,7 +29,7 @@ export default {
     const { motivo } = req.body;
     
     const ja_existe = await connection('motivos')
-      .where('motivo', motivo.motivo)
+      .where('motivo', motivo.motivo.toLowerCase())
       .whereNot('motivo_id', motivo.motivo_id);
 
     if(ja_existe.length){
@@ -69,10 +69,11 @@ export default {
     const { motivo } = req.body;
 
     const ja_existe = await connection('motivos')
-      .where('motivo', motivo.motivo);
-    if(ja_existe.length){
+      .where('motivo', motivo.motivo.toLowerCase());
+
+    if(ja_existe.length)
       throw { message: 'Já existe um motivo com este nome.' };
-    }
+    
     else {
       // forcar is_enabled
       motivo.is_enabled = true;

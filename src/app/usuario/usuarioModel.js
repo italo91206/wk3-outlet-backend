@@ -15,7 +15,6 @@ const connection = require('../../database/connection');
 
 export default {
   async emailAlreadyInUse(term){
-    console.log('toLowerCase', term.toLowerCase())
     const email = await connection('perfis')
       .where('email', term.toLowerCase())
       .first();
