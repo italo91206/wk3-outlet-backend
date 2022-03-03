@@ -10,6 +10,7 @@ exports.seed = function(knex){
                     valor: 30,
                     is_percent: false,
                     is_fixed: true,
+                    is_enabled: true,
                 },
                 {
                     codigo: 'CUPOM2020',
@@ -18,6 +19,7 @@ exports.seed = function(knex){
                     valor: 25,
                     is_percent: true,
                     is_fixed: false,
+                    is_enabled: true,
                 },
                 {
                     codigo: 'VERAO2020',
@@ -26,6 +28,7 @@ exports.seed = function(knex){
                     valor: 10,
                     is_percent: false,
                     is_fixed: true,
+                    is_enabled: true,
                 }
             ])
         });

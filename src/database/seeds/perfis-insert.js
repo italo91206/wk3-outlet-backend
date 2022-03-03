@@ -11,7 +11,8 @@ exports.seed = function(knex){
                     sobrenome: '- WK3 Outlet',
                     isAdmin: true,
                     isEmployee: false,
-                    isCompany: false
+                    isCompany: false,
+                    is_enabled: true
                 },
                 // default user
                 {
@@ -21,7 +22,8 @@ exports.seed = function(knex){
                     sobrenome: '- WK3 Outlet',
                     isAdmin: false,
                     isEmployee: true,
-                    isCompany: false
+                    isCompany: false,
+                    is_enabled: true
                 },
                 {
                     email: 'cliente@wk3outlet.com.br',
@@ -30,7 +32,8 @@ exports.seed = function(knex){
                     sobrenome: '- WK3 Outlet',
                     isAdmin: false,
                     isEmployee: false,
-                    isCompany: false
+                    isCompany: false,
+                    is_enabled: true
                 }
             ])
         })
