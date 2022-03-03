@@ -4,29 +4,29 @@ exports.seed = function(knex){
         .then(function(){
             return knex('cores').insert([
                 {
-                    cor_id: 1,
                     cor: 'Vermelho',
-                    hexa: '#d32f2f'
+                    hexa: '#d32f2f',
+                    is_enabled: true
                 },
                 {
-                    cor_id: 2,
                     cor: 'Verde',
-                    hexa: '#00695c'
+                    hexa: '#00695c',
+                    is_enabled: true
                 },
                 {
-                    cor_id: 3,
                     cor: 'Roxo',
-                    hexa: '#6a1b9a'
+                    hexa: '#6a1b9a',
+                    is_enabled: true
                 },
                 {
-                    cor_id: 4,
                     cor: 'Azul Escuro',
-                    hexa: '#283593'
+                    hexa: '#283593',
+                    is_enabled: true
                 },
                 {
-                    cor_id: 5,
                     cor: 'Azul Claro',
-                    hexa: '#1565c0'
+                    hexa: '#1565c0',
+                    is_enabled: true
                 }
             ])
         })

@@ -1,4 +1,5 @@
-exports.up = function(knex){
+
+exports.up = function(knex) {
     return knex.schema.createTable('cupons', function(table){
         table.increments('cupom_id').primary();
         table.string('codigo', 45).notNullable();
@@ -11,6 +12,6 @@ exports.up = function(knex){
     })
 };
 
-exports.down = function(knex){
-    knex.schema.dropTable('cupons');
+exports.down = function(knex) {
+    return knex.schema.dropTable('cupons');
 };

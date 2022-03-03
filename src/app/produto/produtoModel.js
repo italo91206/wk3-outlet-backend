@@ -13,6 +13,18 @@ const multer = require('multer');
 
 
 export default {
+  async productNameAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    const produto = await connection('produtos')
+      .where('nome_produto', 'like', term.toUpperCase())
+      .orWhere('nome_produto', 'like', term.toLowerCase())
+      .orWhere('nome_produto', 'like', capitalized_term)
+      .first();
+      
+    return produto;
+  },
+
 	async listarProdutos() {
     const produtos = await connection('produtos')
 			.where('is_enabled', true)
@@ -50,9 +62,10 @@ export default {
 		let variacoes = null;
     if(produto.variacoes) variacoes = produto.variacoes;
 
-		const nome_existente = await connection('produtos')
-			.where('nome_produto', produto.nome_produto)
-			.select('*');
+		const nome_em_uso = await this.productNameAlreadyInUse(produto.nome_produto)
+    if (nome_em_uso) {
+			throw { message: 'Já existe um produto com este nome.' };
+		}
 
 		delete produto.variacoes;
 
@@ -65,10 +78,7 @@ export default {
 		if(!produto.sku)
 		produto.sku = produto.url;
 
-		if (nome_existente.length > 0) {
-			let prox = nome_existente.length + 1;
-			produto.url = `${produto.url}-${prox}`;
-		}
+		
 
 		// force is_enabled
 		produto.is_enabled = true;
@@ -163,6 +173,11 @@ export default {
 	async atualizarProduto(req) {
     const { produto } = req.body;
     let variacoes = null;
+    
+    const nome_em_uso = await this.productNameAlreadyInUse(produto.nome_produto)
+    if(nome_em_uso)
+      throw { message: 'Já existe um produto com este nome.' };
+
     if(produto.variacoes) variacoes = produto.variacoes;
     delete produto.variacoes;
     delete produto.imagens;

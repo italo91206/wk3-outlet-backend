@@ -3,6 +3,18 @@ import { DataNotFoundException } from '../../utils/exceptions';
 const connection = require('../../database/connection');
 
 export default {
+  async modeloAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    const modelo = await connection('modelos')
+      .where('modelo', 'like', term.toUpperCase())
+      .orWhere('modelo', 'like', term.toLowerCase())
+      .orWhere('modelo', 'like', capitalized_term)
+      .first();
+
+    return modelo;
+  },
+
   async listarModelos() {
     const modelos = await connection('modelos')
       .where('is_enabled', true)
@@ -38,10 +50,11 @@ export default {
       throw { message: "Já existe um modelo com esse nome! "};
     }
     else{
+      const modelo_em_uso = await this.modeloAlreadyInUse(modelo.modelo)
       const em_uso = await connection('produtos')
         .where('modelo_id', modelo.modelo_id);
       
-      if(em_uso.length)
+      if(em_uso.length || modelo_em_uso)
         throw { message: 'Não é possível alterar um modelo já em uso.' };
       else{
         const atualizar = await connection('modelos')
@@ -55,12 +68,9 @@ export default {
 
   async criarModelo(req) {
     const { modelo } = req.body;  
+    const modelo_em_uso = await this.modeloAlreadyInUse(modelo.modelo)
 
-    const repetido = await connection('modelos')
-      .where('modelo', modelo.modelo)
-      .select('*')
-
-    if(repetido.length)
+    if(modelo_em_uso)
       throw { message: "Já existe um modelo com esse nome"};
     else {
       // forçar is_enabled

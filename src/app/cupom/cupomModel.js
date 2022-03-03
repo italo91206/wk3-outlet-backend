@@ -1,6 +1,18 @@
 const connection = require('../../database/connection');
 
 export default {
+  async cupomNameAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    const motivo = await connection('motivos')
+      .where('motivo', 'like', term.toUpperCase())
+      .orWhere('motivo', 'like', term.toLowerCase())
+      .orWhere('motivo', 'like', capitalized_term)
+      .first();
+      
+    return motivo;
+  },
+
   async getCupons(){
     const cupons = await connection('cupons')
       .where('is_enabled', true)
