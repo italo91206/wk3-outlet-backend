@@ -1,9 +1,3 @@
-import {
-  CredentialsExistenteException,
-  DataNotFoundException,
-} from '../../utils/exceptions';
-import { get } from 'lodash';
-
 const connection = require('../../database/connection');
 // const bcrypt = require('bcryptjs');
 
@@ -14,16 +8,19 @@ const connection = require('../../database/connection');
 // };
 
 export default {
-  async emailAlreadyInUse(term){
+  async emailAlreadyInUse(term, id){
     const sliced_term = term.slice(1)
     const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
     const email = await connection('perfis')
-      .where('email', term.toLowerCase())
-      .orWhere('email', term.toUpperCase())
+      .where('email', 'like', term.toLowerCase())
+      .orWhere('email', 'like', term.toUpperCase())
       .orWhere('email', 'like', capitalized_term)
       .first();
     
-    return email;
+    if(email == null) 
+      return null
+    else 
+      return email.id == id ? null : email;
   },
 
   async listarUsuarios(){
@@ -46,12 +43,9 @@ export default {
 
   async novoUsuario(req){
     const { usuario } = req.body;
-    const existe_email = await connection('perfis')
-      .where('email', usuario.email)
-      .select('*')
-      .first();
+    const email_em_uso = await this.emailAlreadyInUse(usuario.email, null)
 
-    if(existe_email)  
+    if(email_em_uso)  
       throw { message: 'Já existe um usuário com este e-mail.' };
     else if(!usuario.email)
       throw  { message: 'Não foi inserido um e-mail válido' };
@@ -103,16 +97,9 @@ export default {
   async atualizarUsuario(req){
     const { usuario } = req.body;
 
-    const ja_existe = await connection('perfis')
-      .whereNot('id', usuario.id)
-      .where('email', usuario.email)
-      .first();
-
-    const already_in_use = await this.emailAlreadyInUse(usuario.email)
+    const already_in_use = await this.emailAlreadyInUse(usuario.email, usuario.id)
     
     if(already_in_use)
-      throw { message: 'Já existe uma conta com este e-mail.' };
-    else if(ja_existe)
       throw { message: 'Já existe uma conta com este e-mail.' };
     else {
       const atualizar = await connection('perfis')
