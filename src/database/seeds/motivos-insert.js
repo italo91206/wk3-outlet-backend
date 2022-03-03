@@ -3,10 +3,10 @@ exports.seed = function(knex){
         .del()
         .then(function(){
             return knex('motivos').insert([
-                { motivo: 'Receber itens' },
-                { motivo: 'Danificado' },
-                { motivo: 'Contagem de inventário' },
-                { motivo: 'Extraoficial' }
+                { motivo: 'Receber itens', is_enabled: true },
+                { motivo: 'Danificado', is_enabled: true },
+                { motivo: 'Contagem de inventário', is_enabled: true },
+                { motivo: 'Extraoficial', is_enabled: true }
             ])
         })
 }
