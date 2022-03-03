@@ -9,6 +9,7 @@ exports.seed = function(knex){
             custo: 49.90,
             lucro: 100.00,
             is_enabled: true,
+            sku: 'CB-01',
         },
         {
             nome_produto: 'Camiseta Mais Bonita que a outra',
@@ -19,6 +20,7 @@ exports.seed = function(knex){
             custo: 89.90,
             lucro: 100.00,
             is_enabled: true,
+            sku: 'CM-01',
         },
         {
             nome_produto: 'Camiseta Feia',
@@ -29,6 +31,7 @@ exports.seed = function(knex){
             custo: 49.90,
             lucro: 40.00,
             is_enabled: true,
+            sku: 'CF-01',
         },
         {
             nome_produto: 'Camiseta Horrorosa',
@@ -39,6 +42,7 @@ exports.seed = function(knex){
             custo: 59.90,
             lucro: 300.00,
             is_enabled: true,
+            sku: 'CH-01',
         }
     ])
 }
