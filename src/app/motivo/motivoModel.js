@@ -1,6 +1,18 @@
 const connection = require('../../database/connection');
 
 export default {
+  async motivoAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    const motivo = await connection('motivos')
+      .where('motivo', 'like', term.toUpperCase())
+      .orWhere('motivo', 'like', term.toLowerCase())
+      .orWhere('motivo', 'like', capitalized_term)
+      .first();
+      
+    return motivo;
+  },
+
   async listarMotivos() {
     const motivos = await connection('motivos')
       .where('is_enabled', true)
@@ -32,7 +44,9 @@ export default {
       .where('motivo', motivo.motivo.toLowerCase())
       .whereNot('motivo_id', motivo.motivo_id);
 
-    if(ja_existe.length){
+    const ja_em_uso = await this.motivoAlreadyInUse(motivo.motivo)
+
+    if(ja_existe.length || ja_em_uso){
       throw { message: 'Já existe um motivo com este nome.' };
     }
     else{
@@ -71,7 +85,9 @@ export default {
     const ja_existe = await connection('motivos')
       .where('motivo', motivo.motivo.toLowerCase());
 
-    if(ja_existe.length)
+    const ja_em_uso = await this.motivoAlreadyInUse(motivo.motivo)
+
+    if(ja_existe.length || ja_em_uso)
       throw { message: 'Já existe um motivo com este nome.' };
     
     else {

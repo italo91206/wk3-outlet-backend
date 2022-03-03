@@ -1,6 +1,20 @@
 const connection = require('../../database/connection');
 
 export default {
+
+  async tamanhoAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    
+    const tamanho = await connection('tamanhos')
+      .where('tamanho', 'like', term.toUpperCase())
+      .orWhere('tamanho', 'like', term.toLowerCase())
+      .orWhere('tamanho', 'like', capitalized_term)
+      .first();
+
+    return tamanho;
+  },
+
   async listarTamanhos() {
     const tamanhos = await connection('tamanhos')
       .where('is_enabled', true)
@@ -70,8 +84,10 @@ export default {
       .where('tamanho', tamanho.tamanho)
       .select('*')
       .first();
+
+    const tamanho_in_use = await this.tamanhoAlreadyInUse(tamanho.tamanho)
     
-    if(repetido)
+    if(repetido || tamanho_in_use)
       throw { message: "Já existe esse tamanho!" };
     else{
       // forçar is_enabled

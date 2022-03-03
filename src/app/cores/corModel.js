@@ -7,11 +7,15 @@ const connection = require('../../database/connection');
 
 export default {
   async colorAlreadyInUse(term){
-    const color = await connection('cores')
-      .where('cor', term.toLowerCase())
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    const cor = await connection('cores')
+      .where('cor', 'like', term.toUpperCase())
+      .orWhere('cor', 'like', term.toLowerCase())
+      .orWhere('cor', 'like', capitalized_term)
       .first();
-    
-    return color;
+      
+    return cor;
   },
 
   async getCores(req) {

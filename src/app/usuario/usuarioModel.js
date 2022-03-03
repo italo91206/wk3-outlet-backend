@@ -15,8 +15,12 @@ const connection = require('../../database/connection');
 
 export default {
   async emailAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
     const email = await connection('perfis')
       .where('email', term.toLowerCase())
+      .orWhere('email', term.toUpperCase())
+      .orWhere('email', 'like', capitalized_term)
       .first();
     
     return email;

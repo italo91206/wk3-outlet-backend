@@ -3,6 +3,18 @@ import { DataNotFoundException } from '../../utils/exceptions';
 const connection = require('../../database/connection');
 
 export default {
+  async marcaAlreadyInUse(term){
+    const sliced_term = term.slice(1)
+    const capitalized_term = `${term[0].toUpperCase()}${sliced_term.toLowerCase()}`
+    const marca = await connection('marcas')
+      .where('marca', 'like', term.toUpperCase())
+      .orWhere('marca', 'like', term.toLowerCase())
+      .orWhere('marca', 'like', capitalized_term)
+      .first();
+      
+    return marca;
+  },
+
   async listarMarcas() {
     const marcas = await connection('marcas')
       .where('is_enabled', true)
@@ -56,7 +68,9 @@ export default {
       .select('*')
       .first();
     
-    if(repetido)
+    const ja_em_uso = await this.marcaAlreadyInUse(marca.marca)
+    
+    if(repetido || ja_em_uso)
       throw { message: "Já existe uma marca com esse nome!" };
     else{
       const atualizar = await connection('marcas')
@@ -73,7 +87,9 @@ export default {
       .where('marca', marca.marca)
       .first();
 
-    if(repetido)
+    const ja_em_uso = await this.marcaAlreadyInUse(marca.marca)
+
+    if(repetido || ja_em_uso)
       throw { message: "Já existe uma marca com esse nome!" };
     else{
       // forçar is_enabled
