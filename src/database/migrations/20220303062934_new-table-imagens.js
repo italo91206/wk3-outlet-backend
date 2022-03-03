@@ -1,4 +1,5 @@
-exports.up = function(knex){
+
+exports.up = function(knex) {
     return knex.schema.createTable('imagens', function(table){
         table.increments('imagem_id').primary();
         table.string('url', 45);
@@ -9,8 +10,8 @@ exports.up = function(knex){
             .inTable('produtos')
             .notNullable();
     })
-}
+};
 
-exports.down = function(knex){
+exports.down = function(knex) {
     return knex.schema.dropTable('imagens');
-}
+};
