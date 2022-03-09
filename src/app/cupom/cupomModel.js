@@ -65,7 +65,29 @@ export default {
   },
 
   async novoCupom(req){
-    const { cupom } = req.body;
+    let { cupom, quantity_rules, selected_rules } = req.body;
+    let categorias_id = []
+    let produtos_sku = []
+    let marcas_id = []
+    let modelos_id = []
+    let cores_id = []
+    let tamanhos_id = []
+
+    selected_rules.categorias.forEach((categoria) => { categorias_id.push(categoria.categoria_id) })
+    selected_rules.produtos.forEach((produto) => { produtos_sku.push(produto.sku) })
+    selected_rules.marcas.forEach((marca) => { marcas_id.push(marca.marca_id) })
+    selected_rules.modelos.forEach((modelo) => { modelos_id.push(modelo.modelo_id) })
+    selected_rules.cores.forEach((cor) => { cores_id.push(cor.cor_id) })
+    selected_rules.tamanhos.forEach((tamanho) => { tamanhos_id.push(tamanho.tamanho_id) })
+
+    let quantity_value = quantity_rules.value 
+    let quantity_condition = quantity_rules.condition
+    quantity_rules = quantity_rules.rules
+
+    console.log("cupom", cupom)
+    console.log("quantity_rules", quantity_rules)
+    console.log("selected_rules", selected_rules)
+
     const existe_por_codigo = await this.verificaExistePorCodigo(cupom.codigo);
     const data_valida = await this.verificaValidadeData(cupom.validade);
 
@@ -78,7 +100,18 @@ export default {
       throw { message: "Data/hora de validade do cupom é inválido"};
     }
     else {
-      const novo = await connection('cupons').insert(cupom, 'cupom_id');
+      const novo = await connection('cupons').insert({
+        ...cupom, 
+        categorias_id,
+        produtos_sku,
+        marcas_id,
+        modelos_id,
+        cores_id,
+        tamanhos_id,
+        quantity_value,
+        quantity_condition,
+        quantity_rules
+      }, 'cupom_id');
       return novo;
     }
   },
