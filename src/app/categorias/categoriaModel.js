@@ -49,7 +49,7 @@ export default {
     else{
       // force is_enabled
       categoria.is_enabled = true;
-      categoria.url = slugify(categoria.nome, { remove: /[*+~.()'"!:@]/g, lower: true });
+      categoria.url = slugify(categoria.nome_categoria, { remove: /[*+~.()'"!:@]/g, lower: true });
 
       const novo = await connection('categorias')
         .insert(categoria, 'categoria_id');
