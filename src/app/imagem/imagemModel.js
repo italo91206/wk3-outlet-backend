@@ -36,7 +36,7 @@ export default {
     const caminhos = [];
     
     const nome = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
-    console.log(nome);
+    //console.log(nome);
     let indice = 1;
     var caminho = path.join(__dirname, '../../public');
 
@@ -54,8 +54,6 @@ export default {
 
     var Client = require('ftp');
     let ftp = new Client();
-
-    console.log('FTP', process.env.FTP_HOST, process.env.FTP_PORT, process.env.FTP_USER, process.env.FTP_PASSWORD)
 
     caminhos.forEach((caminho) => {
       ftp.on('ready', function() {
