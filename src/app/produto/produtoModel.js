@@ -76,9 +76,14 @@ export default {
 		if (produto.estoque) produto.estoque = parseInt(produto.estoque); else produto.estoque = 0;
 		produto.url = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
 		if(!produto.sku)
-		produto.sku = produto.url;
+		  produto.sku = produto.url;
 
-		
+    const sku_em_uso = await connection('produtos')
+      .where('sku', produto.sku)
+      .first();
+
+    if(sku_em_uso)
+      throw { message: 'Já existe um produto com este SKU.' };
 
 		// force is_enabled
 		produto.is_enabled = true;
@@ -174,9 +179,22 @@ export default {
     const { produto } = req.body;
     let variacoes = null;
     
-    const nome_em_uso = await this.productNameAlreadyInUse(produto.nome_produto)
+    const nome_em_uso = await connection('produtos')
+      .where('nome_produto', produto.nome_produto)
+      .whereNot('produto_id', produto.produto_id)
+      .first();
+
+    
     if(nome_em_uso)
       throw { message: 'Já existe um produto com este nome.' };
+
+    const sku_em_uso = await connection('produtos')
+      .where('sku', produto.sku)
+      .whereNot('produto_id', produto.produto_id)
+      .first();
+
+    if(sku_em_uso)
+      throw { message: 'Já existe um produto com este SKU.' };
 
     if(produto.variacoes) variacoes = produto.variacoes;
     delete produto.variacoes;
