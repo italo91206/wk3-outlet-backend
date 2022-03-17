@@ -27,7 +27,6 @@ export default {
 
 	async listarProdutos() {
     const produtos = await connection('produtos')
-			.where('is_enabled', true)
 			.select('*');
 
 		return produtos;

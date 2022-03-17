@@ -15,7 +15,6 @@ export default {
 
   async getCupons(){
     const cupons = await connection('cupons')
-      .where('is_enabled', true)
       .select('*');
     return cupons;
   },
@@ -124,6 +123,9 @@ export default {
     else if(data_valida){
       throw { message: "Data/hora de validade do cupom é inválido"};
     }
+    else if(cupom.use_rules == 'limited' && cupom.use_quantity == null){
+      throw { message: "Precisa da quantidade limitada de uso."}
+    }
     else {
       const novo = await connection('cupons').insert({
         ...cupom, 
@@ -135,7 +137,7 @@ export default {
         tamanhos_id,
         quantity_value,
         quantity_condition,
-        quantity_rules
+        quantity_rules,
       }, 'cupom_id');
       return novo;
     }
