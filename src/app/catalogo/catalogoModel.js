@@ -3,7 +3,7 @@ const connection = require('../../database/connection');
 export default {
   async getProduto(url) {
     const produto = await connection('produtos')
-      .where('url', url)
+      .where('sku', url)
       .first()
       .then(async function(produto){
         const produtoComJoin = await connection('produtos')
@@ -41,5 +41,46 @@ export default {
         return produto;
       })
     return produto;  
+  },
+
+  async getProdutos(){
+    const produtos = await connection('produtos')
+      .where('is_enabled', true)
+      .then(async function(){
+        const produtoComJoin = await connection('produtos')
+          .leftJoin('modelos', 'produtos.modelo_id', 'modelos.modelo_id')
+          .leftJoin('marcas', 'produtos.marca_id', 'marcas.marca_id')
+          .leftJoin('categorias', 'produtos.categoria_id', 'categorias.categoria_id')
+          .select('*')
+        return produtoComJoin
+      })
+      .then(async function(produtos){
+        for(let i = 0; i < produtos.length; i++){
+          const variacoes = await connection('variacoes')
+            .where('produto_id', produtos[i].produto_id)
+            .leftJoin('cores', 'variacoes.cor_id', 'cores.cor_id')
+            .leftJoin('tamanhos', 'variacoes.tamanho_id', 'tamanhos.tamanho_id')
+            .select(
+              'variacoes.variacao_id',
+              'variacoes.quantidade',
+              'cores.cor',
+              'cores.hexa',
+              'tamanhos.tamanho'
+            );
+          produtos[i].variacoes = variacoes
+        }
+        return produtos;
+      })
+      .then(async function(produtos){
+        for(let i = 0; i< produtos.length; i++){
+          const imagens = await connection('imagens')
+            .where('produto_id', produtos[i].produto_id)
+            .select('*');
+          produtos[i].imagens = imagens;
+        }
+        return produtos;
+      })
+
+    return produtos;
   }
 }
