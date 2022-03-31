@@ -16,6 +16,7 @@ import imagensRouter from './routes/imagens'
 import catalogoRouter from './routes/catalogo'
 import checkoutRouter from './routes/checkout';
 import vendasRouter from './routes/vendas';
+import newsletterRouter from './routes/newsletter';
 
 class RouteController {
   constructor() {
@@ -40,6 +41,7 @@ class RouteController {
     this.router.use('/catalogo', catalogoRouter);
     this.router.use('/checkout', checkoutRouter);
     this.router.use('/vendas', vendasRouter);
+    this.router.use('/newsletter', newsletterRouter);
   }
 }
 
