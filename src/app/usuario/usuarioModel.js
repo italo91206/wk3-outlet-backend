@@ -44,6 +44,7 @@ export default {
   async novoUsuario(req){
     const { usuario } = req.body;
     const email_em_uso = await this.emailAlreadyInUse(usuario.email, null)
+    
 
     if(email_em_uso)  
       throw { message: 'Já existe um usuário com este e-mail.' };
