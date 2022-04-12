@@ -1,3 +1,5 @@
+import emailService from '../newsletter/emailService';
+
 const connection = require('../../database/connection');
 
 export default {
@@ -16,6 +18,11 @@ export default {
 
     antes = antes.estoque;
     let novo = produto.estoque;
+
+    if(antes == 0 && novo > 0){
+      console.log("produto", produto)
+      emailService.enviarEmail(produto)
+    }
 
     let novoAcerto = {
       valor_anterior: parseInt(antes, 10),
