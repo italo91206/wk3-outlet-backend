@@ -1,6 +1,7 @@
 import { DataNotFoundException } from '../../utils/exceptions';
 import slugify from 'slugify';
 import { hasUncaughtExceptionCaptureCallback } from 'process';
+import emailService from '../newsletter/emailService';
 
 const connection = require('../../database/connection');
 const fq = require('fs');
@@ -21,7 +22,7 @@ export default {
       .orWhere('nome_produto', 'like', term.toLowerCase())
       .orWhere('nome_produto', 'like', capitalized_term)
       .first();
-      
+
     return produto;
   },
 
@@ -32,13 +33,13 @@ export default {
 		return produtos;
 	},
 
-	async getProduto(req) {
-		const { url } = req.query;
+	async getProduto(url) {
+
 		const produto = await connection('produtos')
 			.select('*')
 			.where('url', url)
       .first();
-      
+
     const filhos = await this.getFilhos(produto.produto_id)
     if(filhos)
       produto.variacoes = filhos;
@@ -46,7 +47,7 @@ export default {
     const imagens = await connection('imagens')
       .where('produto_id', produto.produto_id)
       .select('*');
-    
+
     if(imagens)
       produto.imagens = imagens;
 
@@ -92,7 +93,7 @@ export default {
 
 		if(variacoes) {
 			variacoes.forEach(async (variacao) => {
-        const novo = { 
+        const novo = {
           produto_id: parseInt(novo_produto),
           tamanho_id: null,
           tamanho_nome: null,
@@ -109,7 +110,7 @@ export default {
           novo.tamanho_id = variacao.tamanho_id;
           novo.tamanho_nome = variacao.tamanho;
         }
-        
+
         // console.log(novo);
 
         let nova_variacao = await connection('variacoes')
@@ -125,7 +126,7 @@ export default {
 
     const em_uso = await connection('acerto_estoque')
       .where('produto_id', id);
-    
+
     if(em_uso.length){
       const atualizar = await connection('produtos')
         .where('produto_id', id)
@@ -144,17 +145,17 @@ export default {
       const imagens = await connection('imagens')
 			.where('produto_id', id)
 			.select('*');
-		
+
       // só pode realmente apagar as imagens se for exclusão física
       // mas por enquanto já vamos simular logo de cara.
       if(imagens){
         var fs = require('fs');
-        
+
         imagens.forEach(async (item) => {
           // console.log(item.url)
           var link = item.url;
           link = link.split('/static/')
-          
+
           fs.unlink(`./src/public/${link[1]}`, function(err){
             if(err) throw err;
           });
@@ -170,20 +171,20 @@ export default {
         .where('produto_id', id)
         .del();
     }
-    
+
 		return true;
 	},
 
 	async atualizarProduto(req) {
     const { produto } = req.body;
     let variacoes = null;
-    
+
     const nome_em_uso = await connection('produtos')
       .where('nome_produto', produto.nome_produto)
       .whereNot('produto_id', produto.produto_id)
       .first();
 
-    
+
     if(nome_em_uso)
       throw { message: 'Já existe um produto com este nome.' };
 
@@ -202,13 +203,13 @@ export default {
 		const existe_sku = await connection('produtos')
 			.where('sku', produto.sku)
 			.whereNot('produto_id', produto.produto_id);
-		
+
 		if(existe_sku.length)
 			throw { message: 'Já existe um produto com este SKU' };
 		else{
 			const atualizar = await connection('produtos')
 				.where('produto_id', produto.produto_id)
-				.update(produto, 'produto_id');
+				.update(produto, '*');
 
       if(variacoes){
         variacoes.forEach(async (variacao) => {
@@ -241,7 +242,7 @@ export default {
       }
 
 			return atualizar;
-		}	
+		}
 	},
 
 	async getUrlById(id){
@@ -256,13 +257,13 @@ export default {
 	async getFilhos(id){
 		const filhos = await connection('variacoes')
       .where('produto_id', id);
-     
+
 		return filhos;
   },
-  
+
   async removerVariacao(req){
     const { id } = req.query;
-    
+
     const response = await connection('variacoes')
       .where('variacao_id', id)
       .del();
