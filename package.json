@@ -35,7 +35,7 @@
     "knex": "^0.95.8",
     "lodash": "^4.17.21",
     "mercadopago": "^1.5.8",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "nodemailer": "^6.7.3",
