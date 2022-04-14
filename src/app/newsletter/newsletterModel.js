@@ -21,18 +21,34 @@ export default {
       .select('id')
       .first();
 
-    let perfil_id = perfil.id
+    if(perfil){
+      let perfil_id = perfil.id
+      let repetido = await this.cadastroRepetido(sku, produto_id, cliente_email, perfil_id)
 
-    let repetido = await this.cadastroRepetido(sku, produto_id, cliente_email, perfil_id)
-    console.log("repetido", repetido)
-
-    if(!repetido){
-      const inserir = await connection('newsletter')
-        .insert({ sku, produto_id, cliente_email, perfil_id }, 'newsletter_id')
-      return inserir;
+      if(!repetido){
+        const inserir = await connection('newsletter')
+          .insert({ sku, produto_id, cliente_email, perfil_id }, 'newsletter_id')
+        return inserir;
+      }
+      else
+        throw { message: "E-mail já cadastrado para este produto" }
     }
-    else
-      throw { message: "E-mail já cadastrado para este produto" }
+    else{
+      const repetido = await connection('newsletter')
+        .where('sku', sku)
+        .where('cliente_email', cliente_email)
+        .where('produto_id', produto_id)
+        .first();
+
+      if(!repetido){
+        const inserir = await connection('newsletter')
+          .insert({ sku, produto_id, cliente_email }, 'newsletter_id')
+
+        return inserir;
+      }
+      else
+        throw { message: "E-mail já cadastrado para este produto"}
+    }
   },
   async getByUser(req){
     const { perfil_id } = req.params
