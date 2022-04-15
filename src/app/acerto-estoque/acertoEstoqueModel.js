@@ -10,6 +10,7 @@ export default {
 
     // console.log(produto);
     // console.log(usuario);
+    // console.log("produto_id", produto.produto_id)
 
     let antes = await connection('produtos')
       .where('produto_id', produto.produto_id )
@@ -20,7 +21,6 @@ export default {
     let novo = produto.estoque;
 
     if(antes == 0 && novo > 0){
-      console.log("produto", produto)
       emailService.enviarEmail(produto)
     }
 

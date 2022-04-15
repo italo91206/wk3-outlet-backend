@@ -39,6 +39,7 @@ export default {
     let fallback_img = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"
     let base_url = "http://wk3outlet.italoferreira.dev.br"
 
+    console.log("produto", produto)
     const novo_produto = await produtoModel.getProduto(produto.url)
     // console.log("novo_produto", novo_produto)
 
