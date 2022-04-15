@@ -26,15 +26,22 @@ export default {
     return enderecos;
   },
 
+  async getImagesIndex(id){
+    const images = await connection('imagens')
+      .where('produto_id', id);
+
+    return images.length || 1;
+  },
+
   async salvarImagens(files, id) {
     const produto = await connection('produtos')
       .where('produto_id', id)
       .select('nome_produto')
       .first();
     const caminhos = [];
-    
+
     const nome = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
-    let indice = 1;
+    let indice = await this.getImagesIndex(id);
     var caminho = path.join(__dirname, '../../public');
 
     files.forEach(async  (file) => {
@@ -54,7 +61,7 @@ export default {
 
     caminhos.forEach((caminho) => {
       ftp.on('ready', function() {
-        
+
         let arquivo_destino = caminho.split('/')
         arquivo_destino = arquivo_destino[arquivo_destino.length-1]
 
@@ -97,7 +104,9 @@ export default {
 
     ftp.on('ready', function(){
       ftp.delete(imagem.url, (error) => {
-        if(error) throw error;
+        if(error){
+          console.log("Erro de FTP delete: ", error)
+        };
         ftp.end();
       })
     })

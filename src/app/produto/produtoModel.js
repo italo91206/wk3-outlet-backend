@@ -156,9 +156,9 @@ export default {
           var link = item.url;
           link = link.split('/static/')
 
-          fs.unlink(`./src/public/${link[1]}`, function(err){
-            if(err) throw err;
-          });
+          fs.unlink(`./src/public/${link[1]}`, (err) => {
+            console.log("Erro de unlink", err)
+          } );
 
           // console.log(`Deletando: ${item.imagem_id}`);
           const deletar = await connection('imagens')
