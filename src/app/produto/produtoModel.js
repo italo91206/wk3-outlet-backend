@@ -175,8 +175,8 @@ export default {
 		return true;
 	},
 
-	async atualizarProduto(req) {
-    const { produto } = req.body;
+	async atualizarProduto(produto) {
+
     let variacoes = null;
 
     const nome_em_uso = await connection('produtos')

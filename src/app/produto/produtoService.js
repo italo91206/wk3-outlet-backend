@@ -25,7 +25,8 @@ export default {
   },
 
   async atualizarProduto(req) {
-    const atualizar = await model.atualizarProduto(req);
+    const { produto } = req.body;
+    const atualizar = await model.atualizarProduto(produto);
     return atualizar;
   },
 

@@ -1,4 +1,5 @@
 import emailService from '../newsletter/emailService';
+import produtoModel from '../produto/produtoModel';
 
 const connection = require('../../database/connection');
 
@@ -35,6 +36,8 @@ export default {
 
     let acerto = await connection('acerto_estoque')
       .insert(novoAcerto, 'acerto_id');
+
+    await produtoModel.atualizarProduto(produto)
 
     // console.log(novoAcerto);
     return acerto;
