@@ -18,7 +18,7 @@ class CatalogoRouter {
     this.router.get('/produto/:url', async (req, res) => {
       let dados;
       let { url } = req.params;
-      
+
       try {
         dados = await service.handleGetProduto(url);
         res.status(200).json({ success: true, data: dados });
@@ -36,6 +36,19 @@ class CatalogoRouter {
       }
       catch(err){
         res.status(200).json({ success: false, message: err.message });
+      }
+    });
+
+    this.router.get('/cupom/:codigo', async(req, res) => {
+      let dados;
+      let {codigo} = req.params
+
+      try{
+        dados = await service.handleGetCupom(codigo);
+        res.status(200).json({ success: true, data: dados })
+      }
+      catch(err){
+        res.status(200).json({ success: false, message: err.message })
       }
     })
   }

@@ -90,5 +90,22 @@ export default {
       })
 
     return produtos;
+  },
+
+  async getCupom(codigo){
+    const cupom = await connection('cupons')
+      .where('codigo', codigo)
+      .first();
+
+    console.log("cupom", cupom)
+
+    if(cupom != undefined){
+      if(cupom.is_enabled || new Date() < cupom.validade)
+        return cupom;
+      else
+        throw { message: "Este cupom não é mais válido." }
+    }
+
+    throw { message: "Não foi encontrado nenhum cupom." }
   }
 }
