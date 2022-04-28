@@ -41,7 +41,7 @@ class CatalogoRouter {
 
     this.router.get('/cupom/:codigo', async(req, res) => {
       let dados;
-      let {codigo} = req.params
+      let { codigo } = req.params
 
       try{
         dados = await service.handleGetCupom(codigo);

@@ -25,10 +25,12 @@ class VendasRouter {
       }
     });
 
-    this.router.get('/venda', async(req, res) => {
+    this.router.get('/venda/:venda_id', async(req, res) => {
       let dados;
+      let { venda_id } = req.params;
+
       try{
-        dados = await service.handleRecuperarVenda(req);
+        dados = await service.handleRecuperarVenda(venda_id);
         res.status(200).json({ success: true, data: dados });
       }
       catch(err){
