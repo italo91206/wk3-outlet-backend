@@ -1,8 +1,8 @@
 import model from './checkoutModel';
 
 export default {
-  async handleRealizarVenda(req){
-    const venda = await model.realizarVenda(req);
+  async handleRealizarVenda(produtos, codigo_cupom, usuario){
+    const venda = await model.realizarVenda(produtos, codigo_cupom, usuario);
     return venda;
   },
 
