@@ -3,7 +3,7 @@ import { Router } from 'express';
 import service from './../../app/checkout/checkoutService';
 
 class CheckoutRouter {
-  constructor(){
+  constructor() {
     this.router = Router();
     //this.middlewares();
     this.routes();
@@ -13,25 +13,29 @@ class CheckoutRouter {
   //   this.router.use(middlewares);
   // }
 
-  routes(){
-    this.router.post('/notification', async(req, res) => {
+  routes() {
+    this.router.post('/notification', async (req, res) => {
       let dados;
+
       try {
         dados = await service.handleNotification(req);
         res.status(200).json({ success: true });
       }
-      catch(err){
+      catch (err) {
         res.status(200).json({ success: false, message: err.message });
       }
     });
 
-    this.router.post('/pagar', async(req, res) => {
+    this.router.post('/pagar', async (req, res) => {
       let dados;
+      let { produtos, codigo_cupom } = req.body;
+      let usuario = req.headers.authorization;
+
       try {
-        dados = await service.handleRealizarVenda(req);
+        dados = await service.handleRealizarVenda(produtos, codigo_cupom, usuario);
         res.status(200).json({ success: true, data: dados });
       }
-      catch(err){
+      catch (err) {
         res.status(200).json({ success: false, message: err.message });
       }
     })

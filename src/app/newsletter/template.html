@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>Aviso de produto em estoque</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+      * {
+        font-family: 'Roboto', sans-serif;
+        text-align: center;
+      }
+      .container {
+        max-width: 425px;
+        margin: 0 auto;
+      }
+      .bottom,
+      .top {
+        height: 60px;
+        background: #FF9900;
+      }
+
+      .top{
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+      }
+
+      .bottom{
+        border-bottom-right-radius: 15px;
+        border-bottom-left-radius: 15px;
+      }
+
+      h2 {
+        color: #323232;
+      }
+
+      button {
+        background: black;
+        color: #fff;
+        border: unset;
+        padding: 10px 15px;
+        text-transform: uppercase;
+        border-radius: 5px;
+      }
+
+      .container--inside {
+        padding: 80px 15px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section class="wrapper">
+      <div class="container">
+        <div class="top"></div>
+
+        <div class="container--inside">
+          <figure>
+            <img src="http://wk3outlet.italoferreira.dev.br/static/__PRODUCT-IMAGE__" alt="" style="width: 100%">
+          </figure>
+
+          <h2>Corre, __PRODUCT-NAME__ acaba de ficar disponível!</h2>
+          <p>Você não vai querer perder essa chance, vai ?</p>
+          <a href="__PRODUCT-LINK__" target="_blank">
+            <button>
+              Visitar agora
+            </button>
+          </a>
+        </div>
+
+        <div class="bottom"></div>
+      </div>
+    </section>
+  </body>
+</html>

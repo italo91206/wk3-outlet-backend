@@ -26,18 +26,22 @@ export default {
     return enderecos;
   },
 
+  async getImagesIndex(id){
+    const images = await connection('imagens')
+      .where('produto_id', id);
+
+    return images.length || 1;
+  },
+
   async salvarImagens(files, id) {
-    // console.log(id)
-    // console.log(files)
     const produto = await connection('produtos')
       .where('produto_id', id)
       .select('nome_produto')
       .first();
     const caminhos = [];
-    
+
     const nome = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
-    console.log(nome);
-    let indice = 1;
+    let indice = await this.getImagesIndex(id);
     var caminho = path.join(__dirname, '../../public');
 
     files.forEach(async  (file) => {
@@ -55,14 +59,11 @@ export default {
     var Client = require('ftp');
     let ftp = new Client();
 
-    console.log('FTP', process.env.FTP_HOST, process.env.FTP_PORT, process.env.FTP_USER, process.env.FTP_PASSWORD)
-
     caminhos.forEach((caminho) => {
       ftp.on('ready', function() {
-        
+
         let arquivo_destino = caminho.split('/')
         arquivo_destino = arquivo_destino[arquivo_destino.length-1]
-        // console.log(arquivo_destino);
 
         ftp.put(caminho, arquivo_destino, function(err) {
           if(err) console.log(err);
@@ -82,9 +83,6 @@ export default {
   },
 
   async guardaEndereco(novo, id){
-    console.log('id: ' + id);
-    console.log(novo);
-
     const imagem = await connection('imagens')
       .insert({
         url: novo,
@@ -101,19 +99,17 @@ export default {
       .where('imagem_id', id)
       .del();
 
-    // console.log(imagem.url);
-
     var Client = require('ftp');
     let ftp = new Client();
 
     ftp.on('ready', function(){
       ftp.delete(imagem.url, (error) => {
-        if(error) console.log(error);
+        if(error){
+          console.log("Erro de FTP delete: ", error)
+        };
         ftp.end();
       })
     })
-
-    console.log('FTP', process.env.FTP_HOST, process.env.FTP_PORT, process.env.FTP_USER, process.env.FTP_PASSWORD)
 
     ftp.connect({
       host: process.env.FTP_HOST,

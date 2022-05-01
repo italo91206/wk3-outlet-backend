@@ -17,7 +17,7 @@ export default {
   },
 
   async retrieveUserData(req) {
-    const { email, password } = req.body;
+    const { email, password, is_public } = req.body;
 
     const validateLogin = await this.loginExists(email, password);
 
@@ -26,7 +26,7 @@ export default {
     }
     else if(!validateLogin.is_enabled)
       throw { message: 'Esta conta foi desativada.' };
-    else if (!validateLogin.isEmployee && !validateLogin.isAdmin)
+    else if (!validateLogin.isEmployee && !validateLogin.isAdmin && is_public == false)
       throw { message: 'Esta conta não possui permissões de acesso.' };
     
     var token = jwt.sign( { usuario: validateLogin} , process.env.SECRET_KEY, 

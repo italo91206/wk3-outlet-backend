@@ -1,3 +1,6 @@
+import emailService from '../newsletter/emailService';
+import produtoModel from '../produto/produtoModel';
+
 const connection = require('../../database/connection');
 
 export default {
@@ -8,6 +11,7 @@ export default {
 
     // console.log(produto);
     // console.log(usuario);
+    // console.log("produto_id", produto.produto_id)
 
     let antes = await connection('produtos')
       .where('produto_id', produto.produto_id )
@@ -16,6 +20,10 @@ export default {
 
     antes = antes.estoque;
     let novo = produto.estoque;
+
+    if(antes == 0 && novo > 0){
+      emailService.enviarEmail(produto)
+    }
 
     let novoAcerto = {
       valor_anterior: parseInt(antes, 10),
@@ -28,6 +36,8 @@ export default {
 
     let acerto = await connection('acerto_estoque')
       .insert(novoAcerto, 'acerto_id');
+
+    await produtoModel.atualizarProduto(produto)
 
     // console.log(novoAcerto);
     return acerto;

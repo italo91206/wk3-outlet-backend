@@ -6,8 +6,8 @@ export default {
     return vendas;
   },
 
-  async handleRecuperarVenda(req){
-    const venda = await model.recuperarVenda(req);
+  async handleRecuperarVenda(venda_id){
+    const venda = await model.recuperarVenda(venda_id);
     return venda;
   }
 }
