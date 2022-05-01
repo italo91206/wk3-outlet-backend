@@ -86,7 +86,7 @@ export default {
       .where('venda_id', venda[0])
       .update('preference_id', preference_id);
 
-    return true;
+    return response.body.init_point;
   },
 
   async atualizarVenda(data) {
