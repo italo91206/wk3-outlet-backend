@@ -38,7 +38,7 @@ class CheckoutRouter {
       catch (err) {
         res.status(200).json({ success: false, message: err.message });
       }
-    })
+    });
   }
 }
 

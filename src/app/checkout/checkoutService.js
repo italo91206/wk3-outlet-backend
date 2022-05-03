@@ -9,5 +9,7 @@ export default {
   async handleNotification(req){
     const notificacao = await model.atualizarVenda(req);
     return notificacao;
-  }
+  },
+
+
 }
