@@ -36,6 +36,19 @@ class VendasRouter {
       catch(err){
         res.status(200).json({ success: false, message: err.message });
       }
+    });
+
+    this.router.get('/cancelar/:id_venda', async(req, res) => {
+      let { id_venda } = req.params;
+      let dados;
+
+      try {
+        dados = await service.handleCancelarVenda(id_venda);
+        res.status(200).json({ success: true, data: dados });
+      }
+      catch(err){
+        res.status(200).json({ success: false, message: err.message})
+      }
     })
   }
 }

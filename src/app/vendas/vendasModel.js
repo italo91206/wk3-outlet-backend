@@ -1,4 +1,13 @@
 const connection = require('../../database/connection');
+const mercadopago = require('mercadopago');
+var axios = require('axios')
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+mercadopago.configure({
+  access_token: process.env.MP_ACCESS_TOKEN,
+});
 
 export default {
   async listarVendas(){
@@ -27,5 +36,43 @@ export default {
       venda: venda,
       produtos: produtos
     };
+  },
+
+  async cancelarVenda(id_venda){
+    const venda = await connection('vendas')
+      .where('venda_id', id_venda)
+      .first();
+
+    console.log("preference_id", venda.preference_id)
+
+    let url = `https://api.mercadopago.com/merchant_orders/search?preference_id=${venda.preference_id}`
+
+    const payments = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`
+      }
+    })
+    .then(async (response) => {
+      let payments = response.data.elements[0].payments
+      return payments
+    })
+    .catch((error) => {
+      console.log(error.message)
+      throw { message: "Não foi possível realizar a busca por pagamentos." }
+    })
+
+    payments.forEach(async (p) => {
+      await mercadopago.payment.cancel(p.id)
+        .catch((err) => {
+          console.log('Não foi possível cancelar o pagamento')
+          console.log(err)
+        })
+    })
+
+    await connection('vendas')
+      .where('preference_id', venda.preference_id)
+      .update({ status: 'cancelado' })
+
+    return true;
   }
 }
