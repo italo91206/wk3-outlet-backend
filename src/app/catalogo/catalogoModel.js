@@ -97,7 +97,7 @@ export default {
       .where('codigo', codigo)
       .first();
 
-    console.log("cupom", cupom)
+    // console.log("cupom", cupom)
 
     if(cupom != undefined){
       if(cupom.is_enabled || new Date() < cupom.validade)
