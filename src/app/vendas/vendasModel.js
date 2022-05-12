@@ -30,7 +30,14 @@ export default {
     const produtos = await connection('produtos_vendas')
       .where('venda_id', venda_id)
       .leftJoin('produtos', 'produtos_vendas.produto_id', 'produtos.produto_id')
-      .leftJoin('imagens', 'produtos_vendas.produto_id', 'imagens.produto_id')
+
+    for(const produto of produtos){
+      const imagem = await connection('imagens')
+        .where('produto_id', produto.produto_id)
+        .first();
+
+      produto.imagem_url = imagem.url ? imagem.url : "";
+    }
 
     return {
       venda: venda,
