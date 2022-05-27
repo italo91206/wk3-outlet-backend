@@ -17,6 +17,7 @@ import catalogoRouter from './routes/catalogo'
 import checkoutRouter from './routes/checkout';
 import vendasRouter from './routes/vendas';
 import newsletterRouter from './routes/newsletter';
+import relatoriosRouter from './routes/relatorios';
 
 class RouteController {
   constructor() {
@@ -42,6 +43,7 @@ class RouteController {
     this.router.use('/checkout', checkoutRouter);
     this.router.use('/vendas', vendasRouter);
     this.router.use('/newsletter', newsletterRouter);
+    this.router.use('/relatorios', relatoriosRouter)
   }
 }
 
