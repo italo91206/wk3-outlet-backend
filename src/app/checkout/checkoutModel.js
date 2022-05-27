@@ -90,6 +90,7 @@ export default {
       //   venda_id: venda_id[0],
       //   produto_id: i.id
       // })
+
       await connection('produtos_vendas')
         .insert({
           quantidade: i.quantity,

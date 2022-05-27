@@ -58,9 +58,9 @@ export default {
 	},
 
 	async novoProduto(req) {
-		let { produto } = req.body;
+    let { produto } = req.body;
 		let variacoes = null;
-    if(produto.variacoes) variacoes = produto.variacoes;
+    if(produto.variacoes.length) variacoes = produto.variacoes;
 
 		const nome_em_uso = await this.productNameAlreadyInUse(produto.nome_produto)
     if (nome_em_uso) {
@@ -77,6 +77,13 @@ export default {
 		produto.url = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
 		if(!produto.sku)
 		  produto.sku = produto.url;
+
+    const url_em_uso = await connection('produtos')
+      .where('url', produto.url)
+      .first();
+
+    if(url_em_uso)
+      produto.url += '-1'
 
     const sku_em_uso = await connection('produtos')
       .where('sku', produto.sku)
