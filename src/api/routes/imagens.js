@@ -28,21 +28,21 @@ class ImagensRouter {
 
   routes() {
     this.router.post('/upload', upload.array('fileimage', 10), async (req, res) => {
-      // let nomes = [];
-      let id = req.body.id;
-
-      try {
-        // req.files.forEach((item) => { nomes.push(item.filename); })
-        // console.log(req.files);
-        // const dados = await service.handleGravarEnderecos(nomes, id);
-        const dados = await service.handleSalvarImagens(req.files, id);
-        if (!req.files)
-          res.status(200).json({ success: false, message: 'Algo aconteceu com o upload de imagens.' });
-        else
-          res.status(200).json({ success: true, data: dados });
-      }
-      catch (err) {
-        res.status(200).json({ success: false, message: err.message });
+      if(req.files.length){
+        let id = req.body.id;
+        try {
+          // req.files.forEach((item) => { nomes.push(item.filename); })
+          // console.log(req.files);
+          // const dados = await service.handleGravarEnderecos(nomes, id);
+          const dados = await service.handleSalvarImagens(req.files, id);
+          if (!req.files)
+            res.status(200).json({ success: false, message: 'Algo aconteceu com o upload de imagens.' });
+          else
+            res.status(200).json({ success: true, data: dados });
+        }
+        catch (err) {
+          res.status(200).json({ success: false, message: err.message });
+        }
       }
     });
 
@@ -61,7 +61,7 @@ class ImagensRouter {
     this.router.delete('/remover', async(req, res) => {
       let dados;
       let { id } = req.query;
-      
+
       try{
         dados = await service.handleRemoverImagem(id);
         res.status(200).json({ success: true, data: dados });
