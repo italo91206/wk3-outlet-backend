@@ -9,7 +9,7 @@ export default {
       .orWhere('motivo', 'like', term.toLowerCase())
       .orWhere('motivo', 'like', capitalized_term)
       .first();
-      
+
     return motivo;
   },
 
@@ -21,9 +21,16 @@ export default {
 
   async getCupom(req){
     const { id } = req.query;
-    const cupom = await connection('cupons').where('cupom_id', id).select('*').first();
+    const cupom = await connection('cupons')
+      .where('cupom_id', id)
+      .select('*')
+      .first();
+
     if(cupom == undefined)
       throw { message: "ID de cupom não existe." };
+    let data = new Date(cupom.validade)
+    cupom.validade = `${data.getFullYear()}-${data.getMonth()+1}-${data.getDate()}`
+
     return cupom;
   },
 
@@ -57,7 +64,7 @@ export default {
     selected_rules.cores.forEach((cor) => { cores_id.push(cor.cor_id) })
     selected_rules.tamanhos.forEach((tamanho) => { tamanhos_id.push(tamanho.tamanho_id) })
 
-    let quantity_value = quantity_rules.value 
+    let quantity_value = quantity_rules.value
     let quantity_condition = quantity_rules.condition
     quantity_rules = quantity_rules.rules
 
@@ -67,7 +74,7 @@ export default {
       .first();
 
     const data_valida = await this.verificaValidadeData(cupom.validade);
-  
+
     if(replica_codigo)
       throw { message: "Já existe um cupom com esse código!" };
     else if(data_valida){
@@ -77,7 +84,7 @@ export default {
       const novo = await connection('cupons')
         .where('cupom_id', cupom.cupom_id)
         .update({
-          ...cupom, 
+          ...cupom,
           categorias_id,
           produtos_sku,
           marcas_id,
@@ -108,7 +115,7 @@ export default {
     selected_rules.cores.forEach((cor) => { cores_id.push(cor.cor_id) })
     selected_rules.tamanhos.forEach((tamanho) => { tamanhos_id.push(tamanho.tamanho_id) })
 
-    let quantity_value = quantity_rules.value 
+    let quantity_value = quantity_rules.value
     let quantity_condition = quantity_rules.condition
     quantity_rules = quantity_rules.rules
 
@@ -117,7 +124,7 @@ export default {
 
     // default value must be set
     cupom.is_enabled = true;
-  
+
     if(existe_por_codigo)
       throw { message: "Já existe um cupom com esse código!" };
     else if(data_valida){
@@ -128,7 +135,7 @@ export default {
     }
     else {
       const novo = await connection('cupons').insert({
-        ...cupom, 
+        ...cupom,
         categorias_id,
         produtos_sku,
         marcas_id,
