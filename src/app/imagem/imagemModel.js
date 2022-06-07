@@ -65,8 +65,11 @@ export default {
         let arquivo_destino = caminho.split('/')
         arquivo_destino = arquivo_destino[arquivo_destino.length-1]
 
-        ftp.put(caminho, arquivo_destino, function(err) {
-          if(err) console.log(err);
+        ftp.put(caminho, `static/${arquivo_destino}`, function(err) {
+          if(err){
+            console.log("Erro na função salvarImagens !")
+            console.log(err)
+          }
           ftp.end();
         });
       });
@@ -103,6 +106,7 @@ export default {
     let ftp = new Client();
 
     ftp.on('ready', function(){
+      console.log("Deletar caminho: " + imagem.url)
       ftp.delete(imagem.url, (error) => {
         if(error){
           console.log("Erro de FTP delete: ", error)

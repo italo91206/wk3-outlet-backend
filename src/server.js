@@ -15,4 +15,9 @@ async function startServer() {
   })
 }
 
+process.on('uncaughtException', (error, origin) => {
+  console.log(`\n${origin} signal received`)
+  console.log(error)
+})
+
 startServer();

@@ -21,8 +21,15 @@ class App {
       this.app.use(cors());
       this.app.use(express.urlencoded({ extended: true }));
       this.app.use(bodyParser.json());
+
+      // this.app.use((err, req, res, next) => {
+      //   if (res.headersSent) {
+      //     return next(err);
+      //   }
+      //   res.status(500).json({ error: err });
+      // })
     }
-  
+
     /**
      * API
      */
