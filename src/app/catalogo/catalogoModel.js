@@ -16,7 +16,7 @@ export default {
             .leftJoin('modelos', 'produtos.modelo_id', 'modelos.modelo_id')
             .leftJoin('marcas', 'produtos.marca_id', 'marcas.marca_id')
             .leftJoin('categorias', 'produtos.categoria_id', 'categorias.categoria_id')
-            .select('*')
+            .select('*', 'produtos.is_enabled')
             .first();
           return produtoComJoin
         })
@@ -45,7 +45,11 @@ export default {
           produto.imagens = imagens;
           return produto;
         })
+
+      if(produto.is_enabled)
         return produto;
+      else
+        throw { message: "Produto não encontrado." }
     }
     else
       throw { message: "Produto não existe." }
@@ -53,13 +57,13 @@ export default {
 
   async getProdutos(){
     const produtos = await connection('produtos')
-      .where('is_enabled', true)
+      .where('produtos.is_enabled', true)
       .then(async function(){
         const produtoComJoin = await connection('produtos')
           .leftJoin('modelos', 'produtos.modelo_id', 'modelos.modelo_id')
           .leftJoin('marcas', 'produtos.marca_id', 'marcas.marca_id')
           .leftJoin('categorias', 'produtos.categoria_id', 'categorias.categoria_id')
-          .select('*')
+          .select('*', 'produtos.is_enabled')
         return produtoComJoin
       })
       .then(async function(produtos){
@@ -89,7 +93,7 @@ export default {
         return produtos;
       })
 
-    return produtos;
+    return produtos.filter((p) => { return p.is_enabled == true });
   },
 
   async getCupom(codigo){
