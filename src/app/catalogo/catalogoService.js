@@ -6,8 +6,15 @@ export default {
     return produto;
   },
 
-  async handleGetProdutos() {
-    const produtos = await model.getProdutos();
+  async handleGetProdutos(search_type, search_id, search_query) {
+    let query = { is_enabled: true }
+
+    if(search_type == 'category'){
+      query.categoria_id = search_id
+      // query.nome_categoria = search_query
+    }
+
+    const produtos = await model.getProdutos(query);
     return produtos;
   },
 

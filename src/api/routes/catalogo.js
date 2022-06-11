@@ -30,8 +30,14 @@ class CatalogoRouter {
 
     this.router.get('/produtos', async(req, res) => {
       let dados;
+      const {search_type, search_id, search_query} = req.query
+
       try{
-        dados = await service.handleGetProdutos();
+        dados = await service.handleGetProdutos(
+          search_type,
+          search_id,
+          search_query
+        );
         res.status(200).json({ success: true, data: dados })
       }
       catch(err){

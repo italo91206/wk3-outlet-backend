@@ -55,15 +55,22 @@ export default {
       throw { message: "Produto não existe." }
   },
 
-  async getProdutos(){
-    const produtos = await connection('produtos')
-      .where('produtos.is_enabled', true)
+  async getProdutos(query){
+    let produtos = await connection('produtos')
+      .where({...query})
       .then(async function(){
         const produtoComJoin = await connection('produtos')
           .leftJoin('modelos', 'produtos.modelo_id', 'modelos.modelo_id')
           .leftJoin('marcas', 'produtos.marca_id', 'marcas.marca_id')
           .leftJoin('categorias', 'produtos.categoria_id', 'categorias.categoria_id')
-          .select('*', 'produtos.is_enabled')
+          .select(
+            'produtos.*',
+            'modelos.modelo',
+            'marcas.marca',
+            'categorias.nome_categoria',
+            'categorias.url',
+            'categorias.categoria_id'
+          )
         return produtoComJoin
       })
       .then(async function(produtos){
@@ -93,7 +100,13 @@ export default {
         return produtos;
       })
 
-    return produtos.filter((p) => { return p.is_enabled == true });
+    if(query.categoria_id){
+      produtos = produtos.filter((p) => {
+        return p.categoria_id == query.categoria_id
+      })
+    }
+
+    return produtos.slice(0, 8)
   },
 
   async getCupom(codigo){
