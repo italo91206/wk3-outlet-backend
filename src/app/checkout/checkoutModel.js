@@ -128,6 +128,8 @@ export default {
     let id_pagamento = data.body.data.id;
     let tipo = data.body.type;
 
+    console.log(data.body)
+
     if (tipo == "payment") {
       const payment = await mercadopago.payment.findById(id_pagamento)
       console.log("payment", payment.body.id)
