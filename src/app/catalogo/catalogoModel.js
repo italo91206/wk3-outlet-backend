@@ -106,7 +106,7 @@ export default {
       })
     }
 
-    return produtos.slice(0, 8)
+    return produtos
   },
 
   async getCupom(codigo){
