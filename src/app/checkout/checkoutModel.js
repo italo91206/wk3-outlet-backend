@@ -3,6 +3,7 @@ const mercadopago = require('mercadopago');
 var jwt = require("jsonwebtoken");
 
 import dotenv from 'dotenv';
+import vendasModel from '../vendas/vendasModel';
 dotenv.config();
 
 mercadopago.configure({
@@ -105,6 +106,9 @@ export default {
       items: items_to_push,
       statement_descriptor: 'WK3OUTLET',
       notification_url: 'https://wk3-outlet-backend.herokuapp.com/checkout/notification/',
+      payment_methods: {
+        installments: soma >= 300 ? 12 : 6
+      },
       back_urls: {
         success: `${process.env.APP_FRONT_URL}`
       }
@@ -143,16 +147,18 @@ export default {
         await connection('vendas')
           .where('preference_id', order.body.preference_id)
           .update({ status: 'aprovado' })
+
+        vendasModel.confirmarVenda(order.body.preference_id)
       }
       else if(payment.body.status == 'refunded'){
         console.log("Pagamento reembolsado: ", payment.body.id)
         const order = await mercadopago.merchant_orders.findById(payment.body.order.id)
-          console.log("order", order.body.id)
-          console.log("preference", order.body.preference_id)
+        console.log("order", order.body.id)
+        console.log("preference", order.body.preference_id)
 
-          await connection('vendas')
-            .where('preference_id', order.body.preference_id)
-            .update({ status: 'reembolsado' })
+        await connection('vendas')
+          .where('preference_id', order.body.preference_id)
+          .update({ status: 'reembolsado' })
       }
     }
   },
