@@ -48,7 +48,7 @@ export default {
     let indice = 0;
 
     nome = slugify(produto.nome_produto, rules );
-    // console.log("nome:", nome)
+    // console.log("files_name", files_name)
     // let indice = await this.getImagesIndex(id);
 
     files_name.forEach(async (file) => {
@@ -68,6 +68,7 @@ export default {
         else
           console.log('File renamed')
       })
+      console.log("novo", novo)
       this.guardaEndereco(novo, id);
       indice++;
       caminhos.push(depois);
