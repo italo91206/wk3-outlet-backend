@@ -132,9 +132,10 @@ export default {
 
     if (tipo == "payment") {
       const payment = await mercadopago.payment.findById(id_pagamento)
-      console.log("payment", payment.body.id)
+      console.log("Procurando por um payment: ", payment.body.id)
 
       if (payment.body.status == 'approved') {
+        console.log("Pagamento aprovado: ", payment.body.id)
         const order = await mercadopago.merchant_orders.findById(payment.body.order.id)
         console.log("order", order.body.id)
         console.log("preference", order.body.preference_id)
@@ -142,6 +143,16 @@ export default {
         await connection('vendas')
           .where('preference_id', order.body.preference_id)
           .update({ status: 'aprovado' })
+      }
+      else if(payment.body.status == 'refunded'){
+        console.log("Pagamento reembolsado: ", payment.body.id)
+        const order = await mercadopago.merchant_orders.findById(payment.body.order.id)
+          console.log("order", order.body.id)
+          console.log("preference", order.body.preference_id)
+
+          await connection('vendas')
+            .where('preference_id', order.body.preference_id)
+            .update({ status: 'reembolsado' })
       }
     }
   },
