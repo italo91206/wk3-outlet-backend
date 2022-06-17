@@ -38,7 +38,7 @@ class VendasRouter {
       }
     });
 
-    this.router.get('/cancelar/:id_venda', async(req, res) => {
+    this.router.delete('/cancelar/:id_venda', async(req, res) => {
       let { id_venda } = req.params;
       let dados;
 
