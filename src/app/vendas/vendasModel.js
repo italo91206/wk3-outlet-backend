@@ -13,7 +13,10 @@ export default {
   async listarVendas(){
     const vendas = await connection('vendas')
       .innerJoin('perfis', 'vendas.usuario_id', 'perfis.id')
-      .select('*', 'perfis.nome as cliente')
+      .select(
+        'vendas.venda_id', 'vendas.total', 'vendas.data_venda', 'vendas.endereco_id', 'vendas.status',
+        'perfis.nome', 'perfis.sobrenome'
+      )
 
     // console.log(vendas);
     return vendas;
@@ -81,8 +84,32 @@ export default {
 
     await connection('vendas')
       .where('preference_id', venda.preference_id)
-      .update({ status: 'cancelado' })
+      .update({ status: 'estornado' })
 
     return true;
+  },
+
+  async confirmarVenda(preference_id){
+    const venda = await connection('vendas')
+      .where('preference_id', preference_id)
+      .first();
+
+    const items_venda = await connection('produtos_vendas')
+      .where('venda_id', venda.venda_id)
+
+    //console.log("items_venda", items_venda)
+
+    items_venda.forEach(async (produto) => {
+      //console.log("produto: ", produto)
+      await connection('produtos')
+        .where('produto_id', produto.produto_id)
+        .decrement('estoque', produto.quantidade)
+    })
+
+    // for(const produto in items_venda){
+    //   await connection('produtos')
+    //     .where('produto_id', produto.produto_id)
+    //     .decrement('estoque', produto.quantidade)
+    // }
   }
 }
