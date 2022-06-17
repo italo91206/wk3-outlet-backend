@@ -11,8 +11,8 @@ export default {
     return enderecos;
   },
 
-  async handleSalvarImagens(files, id) {
-    const imagens = await model.salvarImagens(files, id);
+  async handleSalvarImagens(files_name, id) {
+    const imagens = await model.salvarImagens(files_name, id);
     return imagens;
   },
 

@@ -33,36 +33,56 @@ export default {
     return images.length || 1;
   },
 
-  async salvarImagens(files, id) {
+  async salvarImagens(files_name, id) {
+    // console.log(files_name)
+
     const produto = await connection('produtos')
       .where('produto_id', id)
       .select('nome_produto')
       .first();
+
     const caminhos = [];
-
-    const nome = slugify(produto.nome_produto, { remove: /[*+~.()'"!:@]/g, lower: true });
-    let indice = await this.getImagesIndex(id);
     var caminho = path.join(__dirname, '../../public');
+    let rules = { remove: /[*+~.()'"!:@]/g, replacement: '-', lower: true }
+    let nome = produto.nome_produto.slice(0, 89)
+    let indice = 0;
 
-    files.forEach(async  (file) => {
-      const original = file.originalname;
+    nome = slugify(produto.nome_produto, rules );
+    // console.log("nome:", nome)
+    // let indice = await this.getImagesIndex(id);
+
+    files_name.forEach(async (file) => {
+      let data = slugify("" + new Date().toISOString(), rules)
+      const original = file.caminho_final;
       const extensao = original.split('.')[1];
-      const antes = `${caminho}/${original}`;
-      const novo = `${nome}-${indice}.${extensao}`;
-      let depois = `${caminho}/${nome}-${indice}.${extensao}`;
-      fs.rename(antes, depois, () => {})
+      const antes = `${caminho}\\${original}`;
+      const novo = `${nome}-${indice}-${data}.${extensao}`;
+      let depois = `${caminho}\\${novo}`;
+      // console.log("meu caminho antes: " + antes)
+      // console.log("meu caminho depois: " + depois)
+      fs.rename(antes, depois, (err) => {
+        if(err){
+          console.log(err)
+          throw err
+        }
+        else
+          console.log('File renamed')
+      })
       this.guardaEndereco(novo, id);
       indice++;
       caminhos.push(depois);
     })
+
+    //console.log("caminhos", caminhos)
 
     var Client = require('ftp');
     let ftp = new Client();
 
     caminhos.forEach((caminho) => {
       ftp.on('ready', function() {
-
-        let arquivo_destino = caminho.split('/')
+        //console.log("arquivo_destino: " + caminho)
+        let arquivo_destino = caminho.split("\\")
+        //console.log(arquivo_destino)
         arquivo_destino = arquivo_destino[arquivo_destino.length-1]
 
         ftp.put(caminho, `static/${arquivo_destino}`, function(err) {
