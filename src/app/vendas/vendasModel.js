@@ -36,7 +36,10 @@ export default {
         .where('produto_id', produto.produto_id)
         .first();
 
-      produto.imagem_url = imagem.url ? imagem.url : "";
+      if(imagem)
+        produto.imagem_url = imagem.url;
+      else
+        produto.imagem_url = "";
     }
 
     return {
